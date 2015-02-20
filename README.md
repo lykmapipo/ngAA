@@ -19,7 +19,7 @@ bower install --save ngAA
 1. include the `ngAA` into your app
 ```html
 <!doctype html>
-<html ng-app="myApp">
+<html ng-app="yourApp">
 <head>
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
