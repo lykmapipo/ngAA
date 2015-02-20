@@ -5,10 +5,10 @@ DRY authentication and authorization for angular and ui-router.
 *Current ngAA is solution [ui-router](https://github.com/angular-ui/ui-router)*
 
 ## Dependencies
-[angular]()
-[angular-ui-router]()
-[angular-jwt]()
-[ngstorage]()
+- [angular](https://github.com/angular/angular.js)
+- [angular-ui-router](https://github.com/angular-ui/ui-router)
+- [angular-jwt](https://github.com/auth0/angular-jwt)
+- [ngstorage](https://github.com/gsklee/ngStorage)
 
 ## Install
 1. Bower install
