@@ -2,7 +2,7 @@ ngAA
 =======
 DRY authentication and authorization for angular and ui-router.
 
-*Current ngAA is solution [ui-router](https://github.com/angular-ui/ui-router)*
+*Current ngAA work only with [ui-router](https://github.com/angular-ui/ui-router)*
 
 ## Dependencies
 - [angular](https://github.com/angular/angular.js)
@@ -15,6 +15,13 @@ DRY authentication and authorization for angular and ui-router.
 ```sh
 bower install --save ngAA
 ```
-2. include the files in your app
+## Usage
+1. include the files in your app
 
-3. include the `ngAA` module in your angular application
+2. require `ngAA` module into your angular application or module
+```js
+angular
+.module('yourApp',[
+'ngAA'
+]);
+```
