@@ -83,6 +83,18 @@
 
             };
 
+            //check if user is
+            //authetnicated synchronous
+            $user.isAuthenticatedSync = function() {
+                //user is authenticated
+                //he/she has a token 
+                //and it is not expired
+                var authenticated =
+                    Token.isTokenExpired();
+
+                return !authenticated;
+            };
+
             //chech if user
             //has a given permission
             $user.hasPermission = function(checkPermission) {
@@ -94,6 +106,12 @@
                 return $user
                     .getProfile()
                     .then(function(profile) {
+                        //if there is no profile
+                        //user no permission
+                        if (!profile) {
+                            return false;
+                        }
+
                         //grab user profile permissions
                         var permissions = profile.permissions;
                         //if user profile
@@ -106,12 +124,10 @@
                         //check if user permissions
                         //array includes the
                         //given permission
-                        else {
-                            var hasPermission =
-                                Utils.includes(permissions, checkPermission);
+                        var hasPermission =
+                            Utils.includes(permissions, checkPermission);
 
-                            return hasPermission;
-                        }
+                        return hasPermission;
                     });
             };
 
@@ -125,6 +141,12 @@
                 return $user
                     .getProfile()
                     .then(function(profile) {
+                        //if there is no profile
+                        //user no permission
+                        if (!profile) {
+                            return false;
+                        }
+
                         //grab user profile permissions
                         var permissions = profile.permissions;
 
@@ -138,11 +160,9 @@
                         //check if user permissions
                         //array includes
                         //all of given permission to check
-                        else {
-                            var hasAllPermissions =
-                                Utils.includesAll(permissions, checkPermissions);
-                            return hasAllPermissions;
-                        }
+                        var hasAllPermissions =
+                            Utils.includesAll(permissions, checkPermissions);
+                        return hasAllPermissions;
                     });
 
             };
@@ -157,6 +177,12 @@
                 return $user
                     .getProfile()
                     .then(function(profile) {
+                        //if there is no profile
+                        //user no permission
+                        if (!profile) {
+                            return false;
+                        }
+
                         //grab user profile permissions
                         var permissions = profile.permissions;
 
@@ -170,12 +196,10 @@
                         //check if user permissions
                         //array includes
                         //any of given permission to check
-                        else {
-                            var hasAnyPermission =
-                                Utils.includesAny(permissions, checkPermissions);
+                        var hasAnyPermission =
+                            Utils.includesAny(permissions, checkPermissions);
 
-                            return hasAnyPermission;
-                        }
+                        return hasAnyPermission;
                     });
             };
 

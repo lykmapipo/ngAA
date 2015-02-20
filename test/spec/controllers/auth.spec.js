@@ -17,6 +17,6 @@ describe('ngAA: AuthCtrl', function() {
     }));
 
     it('should attach a list of awesomeThings to the scope', function() {
-        expect(scope.awesomeThings.length).to.be.equal(3);
+        expect(scope.user.email).to.exist;
     });
 });

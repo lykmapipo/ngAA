@@ -39,7 +39,8 @@ module.exports = function(grunt) {
                         '<%= props.dist %>'
                     ]
                 }]
-            }
+            },
+            server: '.tmp'
         },
         // Make sure code styles are up to par and there are no obvious mistakes
         jshint: {
@@ -58,6 +59,9 @@ module.exports = function(grunt) {
                     jshintrc: 'test/.jshintrc'
                 },
                 src: ['test/spec/**/*.js', 'test/mock/**/*.js']
+            },
+            example: {
+                src: ['example/**/*.js']
             }
         },
         watch: {
@@ -76,6 +80,23 @@ module.exports = function(grunt) {
             gruntfile: {
                 files: ['Gruntfile.js'],
                 tasks: ['newer:jshint:all', 'newer:jshint:test', 'karma']
+            },
+            jsExample: {
+                files: ['example/{,*/}*.js'],
+                tasks: ['newer:jshint:example'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            },
+            livereload: {
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                },
+                files: [
+                    'example/{,*/}*.html',
+                    'example/views/{,*/}*.html',
+                    'example/styles/{,*/}*.css'
+                ]
             }
         },
         concat: {
@@ -91,6 +112,7 @@ module.exports = function(grunt) {
                         '.tmp/constants/**/*.js',
                         '.tmp/providers/**/*.js',
                         '.tmp/services/**/*.js',
+                        '.tmp/directives/**/*.js',
                         '.tmp/controllers/**/*.js',
                         'bower_components/base64/base64.js'
                     ]
@@ -117,7 +139,42 @@ module.exports = function(grunt) {
                 configFile: 'test/karma.conf.js',
                 singleRun: true
             }
+        },
+        // The actual grunt server settings
+        connect: {
+            options: {
+                port: 9000,
+                // Change this to '0.0.0.0' to access the server from outside.
+                hostname: 'localhost',
+                livereload: 35729
+            },
+            livereload: {
+                options: {
+                    open: true,
+                    middleware: function(connect) {
+                        return [
+                            connect.static('example'),
+                            connect().use(
+                                '/bower_components',
+                                connect.static('./bower_components')
+                            ),
+                            connect().use(
+                                '/dist',
+                                connect.static('./dist')
+                            )
+                        ];
+                    }
+                }
+            }
         }
+    });
+
+    grunt.registerTask('serve', 'Compile then start a connect web server', function() {
+        grunt.task.run([
+            'clean:server',
+            'connect:livereload',
+            'watch'
+        ]);
     });
 
     grunt.registerTask('default', ['watch']);

@@ -1,0 +1,15 @@
+<form ng-submit="signin()" role="form" autocoplete="off">
+    <legend>Login</legend>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input ng-model="user.email" type="email" class="form-control" id="email" placeholder="Email" required>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input ng-model="user.password" type="password" class="form-control" id="password" placeholder="Password">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

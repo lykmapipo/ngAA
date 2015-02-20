@@ -21,7 +21,16 @@
             'ui.router'
         ])
         //configure http interceptor
-        .config(function($httpProvider, jwtInterceptorProvider, ngAAConfig) {
+        .config(function($httpProvider, $stateProvider, jwtInterceptorProvider, ngAAConfig) {
+            //configure ngAA states
+            $stateProvider
+                .state(ngAAConfig.signinState, {
+                    url: ngAAConfig.signinRoute,
+                    templateUrl: ngAAConfig.signinTemplateUrl,
+                    controller: 'AuthCtrl'
+                });
+
+
             //configure jwtInterceptorProvider
             jwtInterceptorProvider.authHeader = ngAAConfig.authHeader;
 
@@ -105,7 +114,12 @@
                                 //throw exception
                                 //and redirect to signin
                                 if (!isAuthenticated) {
-                                    throw new Error('Not authenticated');
+                                    //broadcast the error
+                                    $rootScope
+                                        .$broadcast('$stateChangePermissionDenied', 'Not authenticated');
+
+                                    //and redirect user to signin
+                                    $state.go(ngAAConfig.signinState);
                                 }
                                 //user is authenticated
                                 //chech for profile permissions 
@@ -113,10 +127,15 @@
                                     checkPermission
                                         .then(function(hasPermit) {
                                             //if has no permit
-                                            //throw execptions and
+                                            //broadcast execptions and
                                             //redirect to signin
                                             if (!hasPermit) {
-                                                throw new Error('Not permitted');
+                                                //broadcast the error
+                                                $rootScope
+                                                    .$broadcast('$stateChangePermissionDenied', 'Not permitted');
+
+                                                //and redirect user to signin
+                                                $state.go(ngAAConfig.signinState);
                                             }
                                             //user is authenticated
                                             //and permitted
@@ -139,13 +158,6 @@
                                             }
                                         });
                                 }
-                            })
-                            .catch(function(error) {
-                                //broadcast the error
-                                $rootScope.$broadcast('$stateChangePermissionDenied', error.message);
-
-                                //and redirect user to login
-                                $state.go(ngAAConfig.signinState);
                             });
                     }
                     //no permits defined
@@ -157,6 +169,9 @@
 
             //reload user on application browser refresh
             //otherwise redirect to `ngAAConfig.signinState`
+            //
+            //expose `isAuthenticated` in $rootScope
+            $rootScope.isAuthenticated = User.isAuthenticatedSync();
         });
 
 }());

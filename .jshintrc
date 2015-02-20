@@ -20,6 +20,8 @@
     "expr": true,
     "globals": {
         "angular": false,
-        "faker": false
+        "faker": false,
+        "moment": false,
+        "KJUR": false
     }
 }

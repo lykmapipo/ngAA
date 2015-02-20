@@ -16,15 +16,15 @@
             //are available
             httpInterceptor: true,
 
-            //application state
+            //application route
             //to redirect user 
             //after signin
-            afterSigninRedirectTo: 'home',
+            afterSigninRedirectTo: '/home',
 
-            //application state
+            //application route
             //to redirect user
             //after signout
-            afterSignoutRedirectTo: 'signin',
+            afterSignoutRedirectTo: '/signin',
 
             //backend or api signin endpoint
             signinUrl: '/signin',
@@ -32,6 +32,13 @@
             //application state
             //to signin user
             signinState: 'signin',
+
+            //application route
+            //to signin user
+            signinRoute: '/signin',
+
+            //template to be used for signin
+            signinTemplateUrl: 'views/signin.html',
 
             //authorization
             //token prefix

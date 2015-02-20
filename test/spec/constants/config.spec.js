@@ -17,8 +17,8 @@ describe('ngAA: ngAAConfig', function() {
 
     it('should have default values', function() {
         expect(Config.httpInterceptor).to.equal(true);
-        expect(Config.afterSigninRedirectTo).to.equal('home');
-        expect(Config.afterSignoutRedirectTo).to.equal('signin');
+        expect(Config.afterSigninRedirectTo).to.equal('/home');
+        expect(Config.afterSignoutRedirectTo).to.equal('/signin');
         expect(Config.signinUrl).to.equal('/signin');
         expect(Config.signinState).to.equal('signin');
         expect(Config.tokenPrefix).to.equal('ngAA');
