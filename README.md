@@ -21,17 +21,24 @@ bower install --save ngAA
 <!doctype html>
 <html ng-app="yourApp">
 <head>
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="bower_components/ngAA/dist/ngAA.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
     ...
 </head>
 <body>
     ...
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
+    <script src=bower_components/ngstorage/ngStorage.js"></script>
+    <script src="bower_components/ngAA/dist/ngAA.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/yourApp.js -->
+    <script src="scripts/app.js"></script>
+    <!-- endbuild -->
 </body>
 </html>
 ```
