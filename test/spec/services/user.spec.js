@@ -94,8 +94,9 @@ describe('ngAA: User', function() {
 
     }));
 
-    it('should be able to set user profile from response http', function() {
+    it('should be able to set user profile from response http', inject(function($rootScope) {
         authProvider.profileKey = 'profile';
+        var profile;
 
         var response = {
             data: {
@@ -108,18 +109,35 @@ describe('ngAA: User', function() {
         $user.setProfile(response);
 
         expect($user).to.respondTo('getProfile');
-        expect($user.getProfile()).to.not.be.null;
-        expect($user.getProfile()).to.equal(user);
 
-    });
+        $user
+            .getProfile()
+            .then(function(result) {
+                profile = result;
+            });
 
-    it('should be able to remove user profilr from the storage', function() {
+        $rootScope.$apply();
+        expect(profile).to.not.be.null;
+        expect(profile).to.equal(user);
+
+    }));
+
+    it('should be able to remove user profile from the storage', inject(function($rootScope) {
+        var profile;
         expect($token).to.respondTo('removeToken');
 
         $token.removeToken();
 
-        expect($user.getProfile()).to.be.undefined;
-    });
+        $user
+            .getProfile()
+            .then(function(result) {
+                profile = result;
+            });
+
+        $rootScope.$apply();
+
+        expect(profile).to.be.undefined;
+    }));
 
     it('should be able to check if user profile has a given permission', inject(function($rootScope) {
         authProvider.profileKey = 'profile';
@@ -222,6 +240,7 @@ describe('ngAA: User', function() {
 
     it('should be able to signout current user', inject(function($rootScope) {
         var signout;
+        var profile;
 
         var response = {
             data: {
@@ -238,11 +257,17 @@ describe('ngAA: User', function() {
                 signout = true;
             });
 
+        $user
+            .getProfile()
+            .then(function(result) {
+                profile = result;
+            });
+
         $rootScope.$apply();
 
         expect(signout).to.be.true;
         expect($token.getToken()).to.be.undefined;
-        expect($user.getProfile()).to.be.undefined;
+        expect(profile).to.be.undefined;
 
     }));
 

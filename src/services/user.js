@@ -41,7 +41,11 @@
 
             //get user profile from storage
             $user.getProfile = function() {
-                //TODO if token expire remove user profile
+                //make use of promise
+                //so that this can be used
+                //in controller and state resolve function
+                var deferred = $q.defer();
+
                 //get storage
                 var storage = Token.getStorage();
 
@@ -50,7 +54,12 @@
 
                 //grab user profile from the storage
                 //see https://github.com/gsklee/ngStorage#read-and-write--demo
-                return storage[profileStorageKey];
+                var profile = storage[profileStorageKey];
+
+                //return user profile
+                deferred.resolve(profile);
+
+                return deferred.promise;
             };
 
             //check if current 
@@ -80,29 +89,30 @@
                 //make use of promise
                 //so that this can be used
                 //in controller and state resolve function
-                var deferred = $q.defer();
 
-                //grab user profile permissions
-                var permissions = $user.getProfile().permissions;
+                //grab user profile
+                return $user
+                    .getProfile()
+                    .then(function(profile) {
+                        //grab user profile permissions
+                        var permissions = profile.permissions;
+                        //if user profile
+                        //doesnt define any
+                        //permissions resolve to false
+                        if (!permissions) {
+                            return false;
+                        }
 
-                //if user profile
-                //doesnt define any
-                //permissions resolve to false
-                if (!permissions) {
-                    deferred.resolve(false);
-                }
+                        //check if user permissions
+                        //array includes the
+                        //given permission
+                        else {
+                            var hasPermission =
+                                Utils.includes(permissions, checkPermission);
 
-                //check if user permissions
-                //array includes the
-                //given permission
-                else {
-                    var hasPermission =
-                        Utils.includes(permissions, checkPermission);
-
-                    deferred.resolve(hasPermission);
-                }
-
-                return deferred.promise;
+                            return hasPermission;
+                        }
+                    });
             };
 
             //check if user
@@ -111,29 +121,30 @@
                 //make use of promise
                 //so that this can be used
                 //in controller and state resolve function
-                var deferred = $q.defer();
 
-                //grab user profile permissions
-                var permissions = $user.getProfile().permissions;
+                return $user
+                    .getProfile()
+                    .then(function(profile) {
+                        //grab user profile permissions
+                        var permissions = profile.permissions;
 
-                //if user profile
-                //doesnt define any
-                //permissions resolve to false
-                if (!permissions) {
-                    deferred.resolve(false);
-                }
+                        //if user profile
+                        //doesnt define any
+                        //permissions resolve to false
+                        if (!permissions) {
+                            return false;
+                        }
 
-                //check if user permissions
-                //array includes
-                //all of given permission to check
-                else {
-                    var hasAllPermissions =
-                        Utils.includesAll(permissions, checkPermissions);
+                        //check if user permissions
+                        //array includes
+                        //all of given permission to check
+                        else {
+                            var hasAllPermissions =
+                                Utils.includesAll(permissions, checkPermissions);
+                            return hasAllPermissions;
+                        }
+                    });
 
-                    deferred.resolve(hasAllPermissions);
-                }
-
-                return deferred.promise;
             };
 
             //check user if has any
@@ -142,29 +153,30 @@
                 //make use of promise
                 //so that this can be used
                 //in controller and state resolve function
-                var deferred = $q.defer();
 
-                //grab user profile permissions
-                var permissions = $user.getProfile().permissions;
+                return $user
+                    .getProfile()
+                    .then(function(profile) {
+                        //grab user profile permissions
+                        var permissions = profile.permissions;
 
-                //if user profile
-                //doesnt define any
-                //permissions resolve to false
-                if (!permissions) {
-                    deferred.resolve(false);
-                }
+                        //if user profile
+                        //doesnt define any
+                        //permissions resolve to false
+                        if (!permissions) {
+                            return false;
+                        }
 
-                //check if user permissions
-                //array includes
-                //any of given permission to check
-                else {
-                    var hasAnyPermission =
-                        Utils.includesAny(permissions, checkPermissions);
+                        //check if user permissions
+                        //array includes
+                        //any of given permission to check
+                        else {
+                            var hasAnyPermission =
+                                Utils.includesAny(permissions, checkPermissions);
 
-                    deferred.resolve(hasAnyPermission);
-                }
-
-                return deferred.promise;
+                            return hasAnyPermission;
+                        }
+                    });
             };
 
             //signout current login user
