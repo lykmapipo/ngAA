@@ -1,46 +1,43 @@
 {
-  "name": "ngAA",
-  "version": "0.1.0",
-  "description": "DRY authentication and authorization for angular",
-  "homepage": "https://github.com/lykmapipo/ngAA",
-  "author": "Lally Elias",
-  "contributors": [
-    {
-      "name": "lykmapipo",
-      "github": "https://github.com/lykmapipo"
+    "name": "ngAA",
+    "version": "0.1.0",
+    "description": "DRY authentication and authorization for angular and ui-router",
+    "homepage": "https://github.com/lykmapipo/ngAA",
+    "author": "Lally Elias",
+    "contributors": [{
+        "name": "lykmapipo",
+        "github": "https://github.com/lykmapipo"
+    }],
+    "dependencies": {},
+    "devDependencies": {
+        "chai": "^1.10.0",
+        "grunt": "^0.4.5",
+        "grunt-contrib-clean": "^0.6.0",
+        "grunt-contrib-concat": "^0.5.0",
+        "grunt-contrib-connect": "^0.9.0",
+        "grunt-contrib-jshint": "^0.11.0",
+        "grunt-contrib-watch": "^0.6.1",
+        "grunt-karma": "^0.10.1",
+        "grunt-newer": "^1.1.0",
+        "grunt-ng-annotate": "^0.9.2",
+        "jshint-stylish": "^1.0.0",
+        "karma": "^0.12.31",
+        "karma-chai": "^0.1.0",
+        "karma-mocha": "^0.1.10",
+        "karma-mocha-reporter": "^0.3.2",
+        "karma-phantomjs-launcher": "^0.1.4",
+        "load-grunt-tasks": "^3.1.0",
+        "mocha": "^2.1.0",
+        "time-grunt": "^1.0.0"
+    },
+    "scripts": {
+        "test": "grunt test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lykmapipo/ngAA.git"
+    },
+    "engines": {
+        "node": ">=0.10.0"
     }
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "chai": "^1.10.0",
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-concat": "^0.5.0",
-    "grunt-contrib-connect": "^0.9.0",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-karma": "^0.10.1",
-    "grunt-newer": "^1.1.0",
-    "grunt-ng-annotate": "^0.9.2",
-    "jshint-stylish": "^1.0.0",
-    "jwt-simple": "^0.2.0",
-    "karma": "^0.12.31",
-    "karma-chai": "^0.1.0",
-    "karma-mocha": "^0.1.10",
-    "karma-mocha-reporter": "^0.3.2",
-    "karma-phantomjs-launcher": "^0.1.4",
-    "load-grunt-tasks": "^3.1.0",
-    "mocha": "^2.1.0",
-    "time-grunt": "^1.0.0"
-  },
-  "scripts": {
-    "test": "grunt test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lykmapipo/ngAA.git"
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  }
 }
