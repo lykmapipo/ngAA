@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         test: 'test',
         spec: 'test/spec',
         example: 'example',
-        temp: '.tmp'
+        tmp: '.tmp'
     };
 
     // Project propsuration.
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 },
                 test: {
                     options: {
-                        jshintrc: '<%= props.test %>t/.jshintrc'
+                        jshintrc: '<%= props.test %>/.jshintrc'
                     },
                     src: ['<%= props.spec %>/**/*.js']
                 },
