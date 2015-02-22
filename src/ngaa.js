@@ -116,7 +116,7 @@
                                 if (!isAuthenticated) {
                                     //broadcast the error
                                     $rootScope
-                                        .$broadcast('$stateChangePermissionDenied', 'Not authenticated');
+                                        .$broadcast('$permissionDenied', 'Not authenticated');
 
                                     //and redirect user to signin
                                     $state.go(ngAAConfig.signinState);
@@ -132,7 +132,7 @@
                                             if (!hasPermit) {
                                                 //broadcast the error
                                                 $rootScope
-                                                    .$broadcast('$stateChangePermissionDenied', 'Not permitted');
+                                                    .$broadcast('$permissionDenied', 'Not permitted');
 
                                                 //and redirect user to signin
                                                 $state.go(ngAAConfig.signinState);
@@ -145,7 +145,7 @@
                                                 // Then trigger $stateChangeSuccess manually to resume the rest of the process
                                                 // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
                                                 $rootScope
-                                                    .$broadcast('$stateChangePermissionAccepted', toState, toParams);
+                                                    .$broadcast('$permissionAccepted', toState, toParams);
 
                                                 $state
                                                     .go(toState.name, toParams, {

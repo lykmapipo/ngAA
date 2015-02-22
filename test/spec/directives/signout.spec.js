@@ -79,6 +79,12 @@ describe('ngAA:Directive:signout', function() {
         authProvider.tokenName = 'token';
         authProvider.afterSignoutRedirectTo = 'signin-t';
 
+        //watch for signoutSuccess event
+        var signoutSuccessEmitted = false;
+        $rootScope.$on('signoutSuccess', function() {
+            signoutSuccessEmitted = true;
+        });
+
         //define after 
         //signout 
         //redirect state
@@ -105,6 +111,7 @@ describe('ngAA:Directive:signout', function() {
 
         expect($user.isAuthenticatedSync()).to.be.false;
         expect($state.current.name).to.equal('signin-t');
+        expect(signoutSuccessEmitted).to.be.true;
 
     }));
 
