@@ -16,15 +16,15 @@
             //are available
             httpInterceptor: true,
 
-            //application route
+            //application state
             //to redirect user 
             //after signin
-            afterSigninRedirectTo: '/home',
+            afterSigninRedirectTo: 'home',
 
-            //application route
+            //application state
             //to redirect user
             //after signout
-            afterSignoutRedirectTo: '/signin',
+            afterSignoutRedirectTo: 'signin',
 
             //backend or api signin endpoint
             signinUrl: '/signin',

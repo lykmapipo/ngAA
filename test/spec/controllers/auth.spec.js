@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngAA: AuthCtrl', function() {
+describe('ngAA:Controller:AuthCtrl', function() {
 
     // load the controller's module
     beforeEach(module('ngAA'));

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngAA: Token', function() {
+describe('ngAA:Service:Token', function() {
     var authProvider;
     var $token;
     var claim;

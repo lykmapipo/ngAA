@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngAA: Utils', function() {
+describe('ngAA:Service:Utils', function() {
     var $utils;
 
     /// inject ngAA

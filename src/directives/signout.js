@@ -2,9 +2,16 @@
     'use strict';
 
     /**
-     * @ngdoc function
+     * @ngdoc directive
      * @name ngAA.directive:signout
-     * @description signout current user
+     * @description signout current signin user.
+     *              It will clear the current user
+     *              token and its profile from the storage.
+     *
+     * @example
+     *         <li ng-show="isAuthenticated">
+     *              <a href="" data-signout>Signout</a>
+     *           </li>
      */
     angular
         .module('ngAA')
@@ -13,28 +20,46 @@
                 restrict: 'A',
                 link: function(scope, element) {
 
+                    //signout event handler
                     function signout(event) {
-
+                        //prevent any of the default
+                        //behaviour of the event fired
                         event.preventDefault();
 
+                        //signout the current user
                         User
                             .signout()
                             .then(function() {
+                                //broadcast user signed
+                                //out successfully
                                 $rootScope.$broadcast('signoutSuccess');
-                                $rootScope.isAuthenticated = false;
-                                // $location.path(ngAAConfig.afterSignoutRedirectTo);
-                                $state.go(ngAAConfig.afterSignoutRedirectTo);
+
+                                //update user authenticity status
+                                $rootScope.isAuthenticated =
+                                    User.isAuthenticatedSync();
+
+                                //redirect to after signout
+                                //state
+                                $state
+                                    .go(ngAAConfig.afterSignoutRedirectTo);
                             })
                             .catch(function(error) {
-                                $rootScope.$broadcast('signoutError', error.message);
+                                //broadcats any
+                                //error encountered during
+                                //signout
+                                $rootScope
+                                    .$broadcast('signoutError', error.message);
                             });
 
                     }
 
-                    //attach listener
-                    element.on ?
-                        element.on('click', signout) :
+                    //attach event listener
+                    //on the element
+                    if (element.on) {
+                        element.on('click', signout);
+                    } else {
                         element.bind('click', signout);
+                    }
                 }
             };
         });

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngAA: User', function() {
+describe('ngAA:Service:User', function() {
     var authProvider;
     var httpBackend;
     var $user;

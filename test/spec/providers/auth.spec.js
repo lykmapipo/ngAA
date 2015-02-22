@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngAA: $authProvider', function() {
+describe('ngAA:Provider:$authProvider', function() {
     var authProvider;
     var Config;
 
