@@ -30,8 +30,7 @@
     "tests",
     "src",
     "package.json",
-    "ngaa.js",
-    "Gruntfile.js"
+    "Gruntfile.js",
     "example"
   ],
   "dependencies": {
