@@ -10,13 +10,7 @@ DRY authentication and authorization for angular and ui-router.
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
-[For demo follow this procedure](https://github.com/lykmapipo/ngAA#testing)
-
-## Dependencies
-- [angular](https://github.com/angular/angular.js)
-- [angular-ui-router](https://github.com/angular-ui/ui-router)
-- [angular-jwt](https://github.com/auth0/angular-jwt)
-- [ngstorage](https://github.com/gsklee/ngStorage)
+[Demo](https://github.com/lykmapipo/ngAA#testing--demo--development)
 
 ## Install
 ```sh
@@ -49,7 +43,7 @@ $ bower install --save ngAA
 </body>
 </html>
 ```
-- **Define your signin template to be used by `ngAA`**
+- **Define your signin template to be used by `ngAA` at `views/signin.html`**
 ```html
 <form ng-submit="signin()" role="form" autocomplete="off">
     <legend>Login</legend>
@@ -81,6 +75,168 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.afterSignoutRedirectTo = 'main';
 });
 ```
+
+- **Define your application states to include `permits` to restrict access**
+[See permits definition](https://github.com/lykmapipo/permits-definition)
+```js
+$stateProvider
+    .state('main', {
+        url: '/',
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl'
+    })
+    .state('about', {
+        url: '/about',
+        templateUrl: 'views/about.html',
+        controller: 'AboutCtrl',
+        data: {
+            permits: {
+                withOnly: 'Post:delete'
+            }
+        }
+    })
+    .state('contact', {
+        url: '/contact',
+        templateUrl: 'views/contact.html',
+        controller: 'ContactCtrl',
+        data: {
+            permits: {
+                withAll: ['Post:create','Post:edit']
+            }
+        },
+        resolve: {
+            profile: function($q, $auth) {
+                return $auth.getProfile();
+            }
+        }
+    });
+```
+
+## Permits definition
+`ngAA` restrict state transition to only allowed user using `permits` state data. `permits` expect to receive the following definition:
+
+- `withOnly` : Which tells `ngAA` to allow user with only provided permission to access the state.
+- `withAll` : Which tells `ngAA` to allow user with all given permission to access the state.
+- `withAny` : Which tells `ngAA` to allow user with any of the given permission to access the state.
+
+## $auth API
+`ngAA $auth` service expose the following API to be used.
+
+- **$auth.signout :** Used to signout current signin user.
+```js
+$auth
+    .signout()
+    .then(function() {
+        //your codes
+        ...
+    })
+    .catch(function(error) {
+        //catch errors
+        ...
+    });
+```
+- **$auth.isAuthenticated :** Used to check if user is authenticated.
+```js
+$auth
+    .isAuthenticated()
+    .then(function(isAuthenticated) {
+        //your codes
+        ...
+    })
+    .catch(function(error) {
+        //catch errors
+        ...
+    });
+```
+
+- **$auth.isAuthenticatedSync :** This is the synchronous version of `isAuthenticated`.
+```js
+$rootScope.isAuthenticated = $auth.isAuthenticatedSync();
+```
+
+- **$auth.getClaim :** Used to get current user `claim` from the token.
+```js
+$auth
+    .getClaim()
+    .then(function(claim) {
+        //your codes
+        ...
+    })
+    .catch(function(error) {
+        //catch errors
+        ...
+    });   
+```
+- **$auth.getProfile :** Used to get current uer profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
+```js
+$stateProvider
+    .state('contact', {
+        url: '/contact',
+        templateUrl: 'views/contact.html',
+        controller: 'ContactCtrl',
+        data: {
+            permits: {
+                withOnly: 'Post:create'
+            }
+        },
+        resolve: {
+            profile: function($q, $auth) {
+                return $auth.getProfile();
+            }
+        }
+    });   
+```
+
+- **$auth.hasPermission :** Used to check if user has a given permission.
+```js
+$auth
+    .hasPermission('Post:create')
+    .then(function(hasPermission) {
+        //your codes
+        ...
+    })
+    .catch(function(error) {
+        //catch errors
+        ...
+    }); 
+```
+
+- **$auth.hasPermissions :** Used to check if user has all permissions
+```js
+$auth
+    .hasPermissions(['Post:create','Post:edit'])
+    .then(function(hasPermission) {
+        //your codes
+        ...
+    })
+    .catch(function(error) {
+        //catch errors
+        ...
+    }); 
+```
+    
+- **$auth.hasAnyPermission :** Used to check if user has any of the permissions
+```js
+$auth
+    .hasAnyPermission(['Post:create','Post:edit'])
+    .then(function(hasPermission) {
+        //your codes
+        ...
+    })
+    .catch(function(error) {
+        //catch errors
+        ...
+    }); 
+```
+
+## Directives
+`ngAA` provide a `signout` directive which you can use it in your templates to signout the curent singin user
+```html
+<li ng-show="isAuthenticated">
+    <a href="" data-signout>Signout</a>
+</li>
+```
+
 ## Configuration
 Out of the box `ngAA` will work if you follow its convection. But it is also an optionated and allows you to override its configuration through its `$authProvider`. Below is the detailed configuration options that you may override
 
@@ -211,19 +367,6 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.authHeader = 'your authorization header name';
 });
 ```
-
-## $auth API
-`ngAA $auth` service expose the following API to be used.
-
-- **$auth.signin :**
-- **$auth.signout :** 
-- **$auth.isAuthenticated :**
-- **$auth.isAuthenticatedSync :**
-- **$auth.getClaim :**
-- **$auth.getProfile :**
-- **$auth.hasPermission :**
-- **$auth.hasPermissions :**
-- **$auth.hasAnyPermission :**
 
 ## Testing && Demo && Development
 
