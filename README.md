@@ -1,8 +1,14 @@
 ngAA
 =======
+[![Build Status](https://travis-ci.org/lykmapipo/ngAA.svg?branch=master)](https://travis-ci.org/lykmapipo/ngAA)
+
+[![Tips](https://img.shields.io/gratipay/lykmapipo.svg)](https://gratipay.com/lykmapipo/)
+
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/lykmapipo/)
+
 DRY authentication and authorization for angular and ui-router.
 
-*Current ngAA work only with [ui-router](https://github.com/angular-ui/ui-router)*
+*Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
 ## Dependencies
 - [angular](https://github.com/angular/angular.js)
