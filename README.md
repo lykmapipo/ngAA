@@ -10,6 +10,8 @@ DRY authentication and authorization for angular and ui-router.
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
+[For demo follow this procedure](https://github.com/lykmapipo/ngAA#testing)
+
 ## Dependencies
 - [angular](https://github.com/angular/angular.js)
 - [angular-ui-router](https://github.com/angular-ui/ui-router)
@@ -47,8 +49,26 @@ $ bower install --save ngAA
 </body>
 </html>
 ```
+- **Define your signin template to be used by `ngAA`**
+```html
+<form ng-submit="signin()" role="form" autocomplete="off">
+    <legend>Login</legend>
 
-- **Require `ngAA` module into your angular application or module**
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input ng-model="user.email" type="email" class="form-control" id="email" placeholder="Email" required>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input ng-model="user.password" type="password" class="form-control" id="password" placeholder="Password">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+```
+
+- **Require `ngAA` module into your angular application or module and define your redirect states**
 ```js
 angular
 .module('yourApp',[
@@ -62,7 +82,7 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
 });
 ```
 ## Configuration
-Out of the box `ngAA` will work if you follow its convection. But it is also an optionated and allow you to override its configuration through its `$authProvider`. Below is the detailed configuration options that you may ovveride
+Out of the box `ngAA` will work if you follow its convection. But it is also an optionated and allows you to override its configuration through its `$authProvider`. Below is the detailed configuration options that you may override
 
 - **afterSigninRedirectTo :** Specify which state to redirect user after signin successfully. Default to `home`. 
 You can override this default on your module config as: 
@@ -98,7 +118,7 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinUrl = '/auth/signin';
 });
 ```
-- **signinState :** Specify signin state to be used when `ngAA`. Default to `signin`. 
+- **signinState :** Specify signin state to be used when `ngAA` when configuring it `ngAAAuthCtrl`. Default to `signin`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -134,7 +154,7 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
 });
 ```
 
-- **tokenPrefix :** A prefix to be used to prefix token and user profile in staorage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. 
+- **tokenPrefix :** A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -192,20 +212,41 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
 });
 ```
 
-## Testing
+## $auth API
+`ngAA $auth` service expose the following API to be used.
+
+- **$auth.signin :**
+- **$auth.signout :** 
+- **$auth.isAuthenticated :**
+- **$auth.isAuthenticatedSync :**
+- **$auth.getClaim :**
+- **$auth.getProfile :**
+- **$auth.hasPermission :**
+- **$auth.hasPermissions :**
+- **$auth.hasAnyPermission :**
+
+## Testing && Demo && Development
 
 * Clone this repository
 
 * Install all development dependencies
-
 ```sh
 $ npm install && bower install
 ```
 
 * Then run test
-
 ```sh
 $ npm test
+```
+
+* To run demo use
+```sh
+$ grunt serve
+```
+
+* To watch your development use
+```sh
+$ grunt
 ```
 
 ## Contribute
