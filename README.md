@@ -61,6 +61,31 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.afterSignoutRedirectTo = 'main';
 });
 ```
+## Configuration
+Out of the box `ngAA` will work if you follow its convection. But it is also an optionated and allow you to override its configuration through its `$authProvider`. Below is the detailed configuration options that you may ovveride
+
+| param | description |
+|---|---|
+| **afterSigninRedirectTo** |  |
+| **afterSignoutRedirectTo** |  |
+| **signinUrl** |  |
+| **signinState** |  |
+| **signinRoute** |  |
+| **signinTemplateUrl** |  |
+| **tokenPrefix** |  |
+| **tokenName** |  |
+| **profileKey** |  |
+| **storage** |  |
+| **authHeader** | Http `Authorization` header. Default to `Authorization`. You can override this default on your module config as: 
+```js
+angular
+.module('yourApp',[
+'ngAA'
+])
+config(function($stateProvider, $urlRouterProvider, $authProvider) {
+        $authProvider.authHeader = 'your authorization header name';
+});
+``` |
 
 ## Testing
 
