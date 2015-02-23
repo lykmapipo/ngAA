@@ -3,7 +3,7 @@
 
     /**
      * @ngdoc function
-     * @name ngAA.providers:Auth
+     * @name $auth
      * @description ngAA authentication service provider
      */
     angular
@@ -33,46 +33,50 @@
                 });
 
             //$auth service factory fuction
-            self.$get = function(Utils, Token, User, ngAAConfig, $rootScope, $state) {
+            self.$get = function(ngAAUtils, ngAAToken, ngAAUser, ngAAConfig, $rootScope, $state) {
                 var $auth = {};
 
                 $auth.signin = function(user) {
-                    return User.signin(user);
+                    return ngAAUser.signin(user);
                 };
 
                 $auth.signout = function() {
-                    return User.logout();
+                    return ngAAUser.logout();
                 };
 
                 $auth.isAuthenticated = function() {
-                    return User.isAuthenticated();
+                    return ngAAUser.isAuthenticated();
+                };
+
+                $auth.isAuthenticatedSync = function() {
+                    return ngAAUser.isAuthenticatedSync();
                 };
 
                 $auth.getClaim = function() {
-                    return Token.getClaim();
+                    return ngAAToken.getClaim();
                 };
 
                 $auth.getProfile = function() {
-                    return User.getProfile();
+                    return ngAAUser.getProfile();
                 };
 
 
                 $auth.hasPermission = function(permission) {
-                    return User.hasPermission(permission);
+                    return ngAAUser.hasPermission(permission);
                 };
 
                 $auth.hasPermissions = function(checkPermissions) {
-                    return User.hasPermissions(checkPermissions);
+                    return ngAAUser.hasPermissions(checkPermissions);
                 };
 
                 $auth.hasAnyPermission = function(checkPermissions) {
-                    return User.hasAnyPermission(checkPermissions);
+                    return ngAAUser.hasAnyPermission(checkPermissions);
                 };
 
                 $auth._onStateChange = function(event, toState, toParams, fromState, fromParams) {
                     // If there are permits defined in toState 
                     // then prevent default and attempt to authorize
-                    var permits = Utils.getStatePermits(toState);
+                    var permits = ngAAUtils.getStatePermits(toState);
 
                     //if there are permits
                     //defined and state is not signinState
@@ -89,26 +93,42 @@
 
                         //check if user is authenticated
                         //and has permission
-                        User
+                        ngAAUser
                             .isAuthenticated()
                             .then(function(isAuthenticated) {
                                 //if not authenticated
                                 //throw exception
                                 if (!isAuthenticated) {
-                                    throw new Error('Not authenticated');
+                                    //broadcast the error
+                                    $rootScope
+                                        .$broadcast(
+                                            'permissionDenied',
+                                            'Not authenticated'
+                                        );
+
+                                    //and redirect user to signin state
+                                    $state.go(ngAAConfig.signinState);
                                 }
 
                                 //user is authenticated
                                 //chech for profile permissions 
                                 else {
-                                    User
+                                    ngAAUser
                                         .checkPermits(permits)
                                         .then(function(hasPermit) {
                                             //if has no permit
                                             //broadcast execptions and
                                             //redirect to signin
                                             if (!hasPermit) {
-                                                throw new Error('Not permitted');
+                                                //broadcast the error
+                                                $rootScope
+                                                    .$broadcast(
+                                                        'permissionDenied',
+                                                        'Not permitted'
+                                                    );
+
+                                                //and redirect user to signin state
+                                                $state.go(ngAAConfig.signinState);
                                             }
 
                                             //user is authenticated
@@ -120,7 +140,7 @@
                                                 // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
                                                 $rootScope
                                                     .$broadcast(
-                                                        '$permissionAccepted',
+                                                        'permissionAccepted',
                                                         toState,
                                                         toParams
                                                     );
@@ -144,17 +164,6 @@
                                             }
                                         });
                                 }
-                            })
-                            .catch(function(error) {
-                                //broadcast the error
-                                $rootScope
-                                    .$broadcast(
-                                        'permissionDenied',
-                                        error.message
-                                    );
-
-                                //and redirect user to signin state
-                                $state.go(ngAAConfig.signinState);
                             });
                     }
                     //no permits defined

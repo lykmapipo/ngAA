@@ -3,7 +3,7 @@
 
     /**
      * @ngdoc directive
-     * @name ngAA.directive:signout
+     * @name signout
      * @description signout current signin user.
      *              It will clear the current user
      *              token and its profile from the storage.
@@ -15,7 +15,7 @@
      */
     angular
         .module('ngAA')
-        .directive('signout', function($rootScope, $state, User, ngAAConfig) {
+        .directive('signout', function($rootScope, $state, ngAAUser, ngAAConfig) {
             return {
                 restrict: 'A',
                 link: function(scope, element) {
@@ -27,7 +27,7 @@
                         event.preventDefault();
 
                         //signout the current user
-                        User
+                        ngAAUser
                             .signout()
                             .then(function() {
                                 //broadcast user signed
@@ -36,7 +36,7 @@
 
                                 //update user authenticity status
                                 $rootScope.isAuthenticated =
-                                    User.isAuthenticatedSync();
+                                    ngAAUser.isAuthenticatedSync();
 
                                 //redirect to after signout
                                 //state

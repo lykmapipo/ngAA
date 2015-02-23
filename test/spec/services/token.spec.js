@@ -14,8 +14,8 @@ describe('ngAA:Service:Token', function() {
     });
 
     // inject ngAA Token
-    beforeEach(inject(function(Token) {
-        $token = Token;
+    beforeEach(inject(function(ngAAToken) {
+        $token = ngAAToken;
     }));
 
     //create a jwt claim
@@ -109,7 +109,6 @@ describe('ngAA:Service:Token', function() {
                 'token': token
             }
         };
-
 
         $token.setToken(response);
 

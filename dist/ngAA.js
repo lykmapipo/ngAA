@@ -1,6 +1,6 @@
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.1.0 - Mon Feb 23 2015 11:56:51
+ * @version v0.1.0 - Mon Feb 23 2015 13:52:19
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -12,7 +12,7 @@
     /**
      * @ngdoc module
      * @name ngAA
-     * @description DRY authentication and authorization for angular
+     * @description DRY authentication and authorization for angular and ui-router
      */
     angular
         .module('ngAA', [
@@ -34,7 +34,7 @@
                 .state(ngAAConfig.signinState, {
                     url: ngAAConfig.signinRoute,
                     templateUrl: ngAAConfig.signinTemplateUrl,
-                    controller: 'AuthCtrl'
+                    controller: 'ngAAAuthCtrl'
                 });
 
 
@@ -43,14 +43,14 @@
 
             // Please note we are annotating the function so that 
             // the $injector works when the file is minified
-            jwtInterceptorProvider.tokenGetter = ['Token', function($token) {
+            jwtInterceptorProvider.tokenGetter = ['ngAAToken', function($token) {
                 //grab token from the TokenFactory
                 var token = $token.getToken();
 
                 //if http interception is allowed
                 //intercept the request
                 //with authorization header
-                if (token && ngAAConfig.httpInterceptor) {
+                if (token) {
                     return token;
                 }
 
@@ -66,7 +66,7 @@
             //see https://github.com/auth0/angular-jwt#jwtinterceptor
             $httpProvider.interceptors.push('jwtInterceptor');
         }])
-        .run(['$rootScope', '$state', 'ngAAConfig', 'User', '$auth', function($rootScope, $state, ngAAConfig, User, $auth) {
+        .run(['$rootScope', '$state', 'ngAAConfig', '$auth', function($rootScope, $state, ngAAConfig, $auth) {
             //check for permits during state change
             $rootScope
                 .$on('$stateChangeStart', $auth._onStateChange);
@@ -87,7 +87,7 @@
             //expose `isAuthenticated` in $rootScope
             //so that it can be used in views
             //and demanding controllers
-            $rootScope.isAuthenticated = User.isAuthenticatedSync();
+            $rootScope.isAuthenticated = $auth.isAuthenticatedSync();
         }]);
 
 }());
@@ -96,8 +96,8 @@
     'use strict';
 
     /**
-     * @ngdoc function
-     * @name ngAA.constants:ngAAConfig
+     * @ngdoc constant
+     * @name ngAAConfig
      * @description provide default configuration of ngAA. These can be
      *              ovverrided using `$authProvider` when configuring
      *              the utilizing module
@@ -105,11 +105,6 @@
     angular
         .module('ngAA')
         .constant('ngAAConfig', {
-            //Intercept each request
-            //and make sure authorization header
-            //are available
-            httpInterceptor: true,
-
             //application state
             //to redirect user 
             //after signin
@@ -144,11 +139,15 @@
 
             //authorization
             //token name
+            //
+            //it will be used to
+            //get a token from
+            //http response
             tokenName: 'token',
 
             //a key to be used to
             //retrieve user profile 
-            //from a repsonse
+            //from a http repsonse
             profileKey: 'user',
 
             //storage type to use
@@ -166,7 +165,7 @@
 
     /**
      * @ngdoc function
-     * @name ngAA.providers:Auth
+     * @name $auth
      * @description ngAA authentication service provider
      */
     angular
@@ -196,46 +195,50 @@
                 });
 
             //$auth service factory fuction
-            self.$get = ['Utils', 'Token', 'User', 'ngAAConfig', '$rootScope', '$state', function(Utils, Token, User, ngAAConfig, $rootScope, $state) {
+            self.$get = ['ngAAUtils', 'ngAAToken', 'ngAAUser', 'ngAAConfig', '$rootScope', '$state', function(ngAAUtils, ngAAToken, ngAAUser, ngAAConfig, $rootScope, $state) {
                 var $auth = {};
 
                 $auth.signin = function(user) {
-                    return User.signin(user);
+                    return ngAAUser.signin(user);
                 };
 
                 $auth.signout = function() {
-                    return User.logout();
+                    return ngAAUser.logout();
                 };
 
                 $auth.isAuthenticated = function() {
-                    return User.isAuthenticated();
+                    return ngAAUser.isAuthenticated();
+                };
+
+                $auth.isAuthenticatedSync = function() {
+                    return ngAAUser.isAuthenticatedSync();
                 };
 
                 $auth.getClaim = function() {
-                    return Token.getClaim();
+                    return ngAAToken.getClaim();
                 };
 
                 $auth.getProfile = function() {
-                    return User.getProfile();
+                    return ngAAUser.getProfile();
                 };
 
 
                 $auth.hasPermission = function(permission) {
-                    return User.hasPermission(permission);
+                    return ngAAUser.hasPermission(permission);
                 };
 
                 $auth.hasPermissions = function(checkPermissions) {
-                    return User.hasPermissions(checkPermissions);
+                    return ngAAUser.hasPermissions(checkPermissions);
                 };
 
                 $auth.hasAnyPermission = function(checkPermissions) {
-                    return User.hasAnyPermission(checkPermissions);
+                    return ngAAUser.hasAnyPermission(checkPermissions);
                 };
 
                 $auth._onStateChange = function(event, toState, toParams, fromState, fromParams) {
                     // If there are permits defined in toState 
                     // then prevent default and attempt to authorize
-                    var permits = Utils.getStatePermits(toState);
+                    var permits = ngAAUtils.getStatePermits(toState);
 
                     //if there are permits
                     //defined and state is not signinState
@@ -252,26 +255,42 @@
 
                         //check if user is authenticated
                         //and has permission
-                        User
+                        ngAAUser
                             .isAuthenticated()
                             .then(function(isAuthenticated) {
                                 //if not authenticated
                                 //throw exception
                                 if (!isAuthenticated) {
-                                    throw new Error('Not authenticated');
+                                    //broadcast the error
+                                    $rootScope
+                                        .$broadcast(
+                                            'permissionDenied',
+                                            'Not authenticated'
+                                        );
+
+                                    //and redirect user to signin state
+                                    $state.go(ngAAConfig.signinState);
                                 }
 
                                 //user is authenticated
                                 //chech for profile permissions 
                                 else {
-                                    User
+                                    ngAAUser
                                         .checkPermits(permits)
                                         .then(function(hasPermit) {
                                             //if has no permit
                                             //broadcast execptions and
                                             //redirect to signin
                                             if (!hasPermit) {
-                                                throw new Error('Not permitted');
+                                                //broadcast the error
+                                                $rootScope
+                                                    .$broadcast(
+                                                        'permissionDenied',
+                                                        'Not permitted'
+                                                    );
+
+                                                //and redirect user to signin state
+                                                $state.go(ngAAConfig.signinState);
                                             }
 
                                             //user is authenticated
@@ -283,7 +302,7 @@
                                                 // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
                                                 $rootScope
                                                     .$broadcast(
-                                                        '$permissionAccepted',
+                                                        'permissionAccepted',
                                                         toState,
                                                         toParams
                                                     );
@@ -307,17 +326,6 @@
                                             }
                                         });
                                 }
-                            })
-                            .catch(function(error) {
-                                //broadcast the error
-                                $rootScope
-                                    .$broadcast(
-                                        'permissionDenied',
-                                        error.message
-                                    );
-
-                                //and redirect user to signin state
-                                $state.go(ngAAConfig.signinState);
                             });
                     }
                     //no permits defined
@@ -338,12 +346,12 @@
 
     /**
      * @ngdoc service
-     * @name ngAA.Token
+     * @name ngAAToken
      * @description common token management
      */
     angular
         .module('ngAA')
-        .factory('Token', ['$localStorage', '$sessionStorage', 'jwtHelper', 'ngAAConfig', function($localStorage, $sessionStorage, jwtHelper, ngAAConfig) {
+        .factory('ngAAToken', ['$localStorage', '$sessionStorage', 'jwtHelper', 'ngAAConfig', function($localStorage, $sessionStorage, jwtHelper, ngAAConfig) {
             var $token = {};
 
             //generate user profile storage
@@ -486,21 +494,19 @@
 
     /**
      * @ngdoc service
-     * @name ngAA.User
-     * @description
-     * # User
-     * Factory in the ngAA.
+     * @name ngAAUser
+     * @description user management service
      */
     angular
         .module('ngAA')
-        .factory('User', ['$q', '$http', 'Token', 'ngAAConfig', 'Utils', function($q, $http, Token, ngAAConfig, Utils) {
+        .factory('ngAAUser', ['$q', '$http', 'ngAAToken', 'ngAAConfig', 'ngAAUtils', function($q, $http, ngAAToken, ngAAConfig, ngAAUtils) {
             var $user = {};
 
             //store user profile 
             //into storage
             $user.setProfile = function(response) {
                 //grab profile storage key
-                var profileStorageKey = Token.getProfileStorageKey();
+                var profileStorageKey = ngAAToken.getProfileStorageKey();
 
                 //deduce user profile from
                 //the response
@@ -514,7 +520,7 @@
                 }
 
                 //grab storage to use
-                var storage = Token.getStorage();
+                var storage = ngAAToken.getStorage();
 
                 //store user profile
                 //see https://github.com/gsklee/ngStorage#read-and-write--demo
@@ -530,10 +536,10 @@
                 var deferred = $q.defer();
 
                 //get storage
-                var storage = Token.getStorage();
+                var storage = ngAAToken.getStorage();
 
                 //get profile storage key
-                var profileStorageKey = Token.getProfileStorageKey();
+                var profileStorageKey = ngAAToken.getProfileStorageKey();
 
                 //grab user profile from the storage
                 //see https://github.com/gsklee/ngStorage#read-and-write--demo
@@ -557,7 +563,7 @@
                 //he/she has a token 
                 //and it is not expired
                 var authenticated =
-                    Token.isTokenExpired();
+                    ngAAToken.isTokenExpired();
 
                 //return user authentication status
                 deferred.resolve(!authenticated);
@@ -573,7 +579,7 @@
                 //he/she has a token 
                 //and it is not expired
                 var authenticated =
-                    Token.isTokenExpired();
+                    ngAAToken.isTokenExpired();
 
                 return !authenticated;
             };
@@ -608,7 +614,7 @@
                         //array includes the
                         //given permission
                         var hasPermission =
-                            Utils.includes(permissions, checkPermission);
+                            ngAAUtils.includes(permissions, checkPermission);
 
                         return hasPermission;
                     });
@@ -644,7 +650,7 @@
                         //array includes
                         //all of given permission to check
                         var hasAllPermissions =
-                            Utils.includesAll(permissions, checkPermissions);
+                            ngAAUtils.includesAll(permissions, checkPermissions);
                         return hasAllPermissions;
                     });
 
@@ -680,7 +686,7 @@
                         //array includes
                         //any of given permission to check
                         var hasAnyPermission =
-                            Utils.includesAny(permissions, checkPermissions);
+                            ngAAUtils.includesAny(permissions, checkPermissions);
 
                         return hasAnyPermission;
                     });
@@ -690,7 +696,7 @@
             $user.signout = function() {
                 //remove token and user 
                 //profile from storage
-                Token.removeToken();
+                ngAAToken.removeToken();
 
                 //promisify signout
                 return $q.when();
@@ -703,7 +709,7 @@
                     .post(ngAAConfig.signinUrl, user)
                     .then(function(response) {
                         //store token
-                        Token.setToken(response);
+                        ngAAToken.setToken(response);
 
                         //store user profile
                         $user.setProfile(response);
@@ -763,7 +769,7 @@
      */
     angular
         .module('ngAA')
-        .factory('Utils', function() {
+        .factory('ngAAUtils', function() {
             var $utils = {};
 
             //array includes utility
@@ -860,7 +866,7 @@
 
     /**
      * @ngdoc directive
-     * @name ngAA.directive:signout
+     * @name signout
      * @description signout current signin user.
      *              It will clear the current user
      *              token and its profile from the storage.
@@ -872,7 +878,7 @@
      */
     angular
         .module('ngAA')
-        .directive('signout', ['$rootScope', '$state', 'User', 'ngAAConfig', function($rootScope, $state, User, ngAAConfig) {
+        .directive('signout', ['$rootScope', '$state', 'ngAAUser', 'ngAAConfig', function($rootScope, $state, ngAAUser, ngAAConfig) {
             return {
                 restrict: 'A',
                 link: function(scope, element) {
@@ -884,7 +890,7 @@
                         event.preventDefault();
 
                         //signout the current user
-                        User
+                        ngAAUser
                             .signout()
                             .then(function() {
                                 //broadcast user signed
@@ -893,7 +899,7 @@
 
                                 //update user authenticity status
                                 $rootScope.isAuthenticated =
-                                    User.isAuthenticatedSync();
+                                    ngAAUser.isAuthenticatedSync();
 
                                 //redirect to after signout
                                 //state
@@ -928,12 +934,12 @@
 
     /**
      * @ngdoc function
-     * @name ngAA.controller:AuthCtrl
+     * @name ngAAAuthCtrl
      * @description user authentication controller
      */
     angular
         .module('ngAA')
-        .controller('AuthCtrl', ['$rootScope', '$scope', 'User', 'ngAAConfig', '$state', function($rootScope, $scope, User, ngAAConfig, $state) {
+        .controller('ngAAAuthCtrl', ['$rootScope', '$scope', 'ngAAUser', 'ngAAConfig', '$state', function($rootScope, $scope, ngAAUser, ngAAConfig, $state) {
             //user model
             $scope.user = {
                 email: '',
@@ -943,7 +949,7 @@
             //signin current
             //provided user credentials
             $scope.signin = function() {
-                User
+                ngAAUser
                     .signin($scope.user)
                     .then(function(response) {
                         //clear email and password
@@ -955,7 +961,7 @@
 
                         //set user authentication status
                         $rootScope.isAuthenticated =
-                            User.isAuthenticatedSync();
+                            ngAAUser.isAuthenticatedSync();
 
                         //redirect to after signin state
                         $state.go(ngAAConfig.afterSigninRedirectTo);

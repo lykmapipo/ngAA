@@ -3,12 +3,12 @@
 
     /**
      * @ngdoc function
-     * @name ngAA.controller:AuthCtrl
+     * @name ngAAAuthCtrl
      * @description user authentication controller
      */
     angular
         .module('ngAA')
-        .controller('AuthCtrl', function($rootScope, $scope, User, ngAAConfig, $state) {
+        .controller('ngAAAuthCtrl', function($rootScope, $scope, ngAAUser, ngAAConfig, $state) {
             //user model
             $scope.user = {
                 email: '',
@@ -18,7 +18,7 @@
             //signin current
             //provided user credentials
             $scope.signin = function() {
-                User
+                ngAAUser
                     .signin($scope.user)
                     .then(function(response) {
                         //clear email and password
@@ -30,7 +30,7 @@
 
                         //set user authentication status
                         $rootScope.isAuthenticated =
-                            User.isAuthenticatedSync();
+                            ngAAUser.isAuthenticatedSync();
 
                         //redirect to after signin state
                         $state.go(ngAAConfig.afterSigninRedirectTo);

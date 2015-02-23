@@ -47,9 +47,9 @@ describe('ngAA:Directive:signout', function() {
     }));
 
     // inject ngAA User
-    beforeEach(inject(function(Token, User) {
-        $user = User;
-        $token = Token;
+    beforeEach(inject(function(ngAAToken, ngAAUser) {
+        $user = ngAAUser;
+        $token = ngAAToken;
     }));
 
     //create a jwt claim

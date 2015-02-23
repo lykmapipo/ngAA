@@ -28,9 +28,9 @@ describe('ngAA:Service:User', function() {
     });
 
     // inject ngAA User
-    beforeEach(inject(function(Token, User, $httpBackend) {
-        $user = User;
-        $token = Token;
+    beforeEach(inject(function(ngAAToken, ngAAUser, $httpBackend) {
+        $user = ngAAUser;
+        $token = ngAAToken;
         httpBackend = $httpBackend;
     }));
 
@@ -296,13 +296,14 @@ describe('ngAA:Service:User', function() {
             expect(rejected).to.be.true;
         });
 
-        it('should be able to signin user', function() {
+        it('should be able to signin user', inject(function($rootScope) {
             authProvider.httpInterceptor = false;
             authProvider.signinUrl = '/signin';
             authProvider.profileKey = 'user';
             authProvider.tokenName = 'token';
 
             var signin = false;
+            var profile;
 
             httpBackend
                 .whenPOST(authProvider.signinUrl)
@@ -319,12 +320,19 @@ describe('ngAA:Service:User', function() {
                     signin = true;
                 });
 
+            $user
+                .getProfile()
+                .then(function(result) {
+                    profile = result;
+                });
+
             httpBackend.flush();
+            $rootScope.$apply();
 
             expect(signin).to.be.true;
             expect($token.getToken()).to.not.be.null;
-            expect($user.getProfile()).to.not.be.null;
-        });
+            expect(profile).to.not.be.null;
+        }));
 
     });
 

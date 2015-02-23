@@ -8,7 +8,7 @@
      */
     angular
         .module('ngAA')
-        .factory('Utils', function() {
+        .factory('ngAAUtils', function() {
             var $utils = {};
 
             //array includes utility

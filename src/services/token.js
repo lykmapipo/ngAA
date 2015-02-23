@@ -3,12 +3,12 @@
 
     /**
      * @ngdoc service
-     * @name ngAA.Token
+     * @name ngAAToken
      * @description common token management
      */
     angular
         .module('ngAA')
-        .factory('Token', function($localStorage, $sessionStorage, jwtHelper, ngAAConfig) {
+        .factory('ngAAToken', function($localStorage, $sessionStorage, jwtHelper, ngAAConfig) {
             var $token = {};
 
             //generate user profile storage

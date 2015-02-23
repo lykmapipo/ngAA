@@ -4,7 +4,7 @@
     /**
      * @ngdoc module
      * @name ngAA
-     * @description DRY authentication and authorization for angular
+     * @description DRY authentication and authorization for angular and ui-router
      */
     angular
         .module('ngAA', [
@@ -26,7 +26,7 @@
                 .state(ngAAConfig.signinState, {
                     url: ngAAConfig.signinRoute,
                     templateUrl: ngAAConfig.signinTemplateUrl,
-                    controller: 'AuthCtrl'
+                    controller: 'ngAAAuthCtrl'
                 });
 
 
@@ -35,14 +35,14 @@
 
             // Please note we are annotating the function so that 
             // the $injector works when the file is minified
-            jwtInterceptorProvider.tokenGetter = ['Token', function($token) {
+            jwtInterceptorProvider.tokenGetter = ['ngAAToken', function($token) {
                 //grab token from the TokenFactory
                 var token = $token.getToken();
 
                 //if http interception is allowed
                 //intercept the request
                 //with authorization header
-                if (token && ngAAConfig.httpInterceptor) {
+                if (token) {
                     return token;
                 }
 
@@ -58,7 +58,7 @@
             //see https://github.com/auth0/angular-jwt#jwtinterceptor
             $httpProvider.interceptors.push('jwtInterceptor');
         })
-        .run(function($rootScope, $state, ngAAConfig, User, $auth) {
+        .run(function($rootScope, $state, ngAAConfig, $auth) {
             //check for permits during state change
             $rootScope
                 .$on('$stateChangeStart', $auth._onStateChange);
@@ -79,7 +79,7 @@
             //expose `isAuthenticated` in $rootScope
             //so that it can be used in views
             //and demanding controllers
-            $rootScope.isAuthenticated = User.isAuthenticatedSync();
+            $rootScope.isAuthenticated = $auth.isAuthenticatedSync();
         });
 
 }());

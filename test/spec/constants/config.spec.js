@@ -16,7 +16,6 @@ describe('ngAA:Constant:ngAAConfig', function() {
     });
 
     it('should have default values', function() {
-        expect(Config.httpInterceptor).to.equal(true);
         expect(Config.afterSigninRedirectTo).to.equal('home');
         expect(Config.afterSignoutRedirectTo).to.equal('signin');
         expect(Config.signinUrl).to.equal('/signin');

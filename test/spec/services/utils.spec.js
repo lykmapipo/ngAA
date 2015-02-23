@@ -7,8 +7,8 @@ describe('ngAA:Service:Utils', function() {
     beforeEach(module('ngAA'));
 
     // inject ngAA Utils
-    beforeEach(inject(function(Utils) {
-        $utils = Utils;
+    beforeEach(inject(function(ngAAUtils) {
+        $utils = ngAAUtils;
     }));
 
     it('should exist', function() {

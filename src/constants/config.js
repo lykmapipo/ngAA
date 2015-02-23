@@ -2,8 +2,8 @@
     'use strict';
 
     /**
-     * @ngdoc function
-     * @name ngAA.constants:ngAAConfig
+     * @ngdoc constant
+     * @name ngAAConfig
      * @description provide default configuration of ngAA. These can be
      *              ovverrided using `$authProvider` when configuring
      *              the utilizing module
@@ -11,11 +11,6 @@
     angular
         .module('ngAA')
         .constant('ngAAConfig', {
-            //Intercept each request
-            //and make sure authorization header
-            //are available
-            httpInterceptor: true,
-
             //application state
             //to redirect user 
             //after signin
@@ -50,11 +45,15 @@
 
             //authorization
             //token name
+            //
+            //it will be used to
+            //get a token from
+            //http response
             tokenName: 'token',
 
             //a key to be used to
             //retrieve user profile 
-            //from a repsonse
+            //from a http repsonse
             profileKey: 'user',
 
             //storage type to use

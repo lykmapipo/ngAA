@@ -3,21 +3,19 @@
 
     /**
      * @ngdoc service
-     * @name ngAA.User
-     * @description
-     * # User
-     * Factory in the ngAA.
+     * @name ngAAUser
+     * @description user management service
      */
     angular
         .module('ngAA')
-        .factory('User', function($q, $http, Token, ngAAConfig, Utils) {
+        .factory('ngAAUser', function($q, $http, ngAAToken, ngAAConfig, ngAAUtils) {
             var $user = {};
 
             //store user profile 
             //into storage
             $user.setProfile = function(response) {
                 //grab profile storage key
-                var profileStorageKey = Token.getProfileStorageKey();
+                var profileStorageKey = ngAAToken.getProfileStorageKey();
 
                 //deduce user profile from
                 //the response
@@ -31,7 +29,7 @@
                 }
 
                 //grab storage to use
-                var storage = Token.getStorage();
+                var storage = ngAAToken.getStorage();
 
                 //store user profile
                 //see https://github.com/gsklee/ngStorage#read-and-write--demo
@@ -47,10 +45,10 @@
                 var deferred = $q.defer();
 
                 //get storage
-                var storage = Token.getStorage();
+                var storage = ngAAToken.getStorage();
 
                 //get profile storage key
-                var profileStorageKey = Token.getProfileStorageKey();
+                var profileStorageKey = ngAAToken.getProfileStorageKey();
 
                 //grab user profile from the storage
                 //see https://github.com/gsklee/ngStorage#read-and-write--demo
@@ -74,7 +72,7 @@
                 //he/she has a token 
                 //and it is not expired
                 var authenticated =
-                    Token.isTokenExpired();
+                    ngAAToken.isTokenExpired();
 
                 //return user authentication status
                 deferred.resolve(!authenticated);
@@ -90,7 +88,7 @@
                 //he/she has a token 
                 //and it is not expired
                 var authenticated =
-                    Token.isTokenExpired();
+                    ngAAToken.isTokenExpired();
 
                 return !authenticated;
             };
@@ -125,7 +123,7 @@
                         //array includes the
                         //given permission
                         var hasPermission =
-                            Utils.includes(permissions, checkPermission);
+                            ngAAUtils.includes(permissions, checkPermission);
 
                         return hasPermission;
                     });
@@ -161,7 +159,7 @@
                         //array includes
                         //all of given permission to check
                         var hasAllPermissions =
-                            Utils.includesAll(permissions, checkPermissions);
+                            ngAAUtils.includesAll(permissions, checkPermissions);
                         return hasAllPermissions;
                     });
 
@@ -197,7 +195,7 @@
                         //array includes
                         //any of given permission to check
                         var hasAnyPermission =
-                            Utils.includesAny(permissions, checkPermissions);
+                            ngAAUtils.includesAny(permissions, checkPermissions);
 
                         return hasAnyPermission;
                     });
@@ -207,7 +205,7 @@
             $user.signout = function() {
                 //remove token and user 
                 //profile from storage
-                Token.removeToken();
+                ngAAToken.removeToken();
 
                 //promisify signout
                 return $q.when();
@@ -220,7 +218,7 @@
                     .post(ngAAConfig.signinUrl, user)
                     .then(function(response) {
                         //store token
-                        Token.setToken(response);
+                        ngAAToken.setToken(response);
 
                         //store user profile
                         $user.setProfile(response);
