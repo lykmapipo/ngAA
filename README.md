@@ -21,7 +21,7 @@ DRY authentication and authorization for angular and ui-router.
 $ bower install --save ngAA
 ```
 ## Usage
-- Include the `ngAA` into your app
+- **Include the `ngAA` into your app**
 ```html
 <!doctype html>
 <html ng-app="yourApp">
@@ -48,7 +48,7 @@ $ bower install --save ngAA
 </html>
 ```
 
-- Require `ngAA` module into your angular application or module
+- **Require `ngAA` module into your angular application or module**
 ```js
 angular
 .module('yourApp',[
