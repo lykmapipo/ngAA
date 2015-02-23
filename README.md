@@ -7,6 +7,7 @@ ngAA
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/lykmapipo/)
 
 DRY authentication and authorization for angular and ui-router.
+It uses [json web tokens](http://jwt.io/) `jwt` and Authorization header for most of it workflow.
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
@@ -76,8 +77,7 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
 });
 ```
 
-- **Define your application states to include `permits` to restrict access**
-[See permits definition](https://github.com/lykmapipo/permits-definition)
+- **[Define your application states to include `permits` to restrict access](https://github.com/lykmapipo/ngAA#permits-definition)**
 ```js
 $stateProvider
     .state('main', {
@@ -110,6 +110,25 @@ $stateProvider
             }
         }
     });
+```
+
+- **Implements your backend signin end point**
+`ngAA` expect you to implement your backend end point using your language of choice. It will send user credentials for signin in the following format
+```js
+{
+    email:'user email',
+    password:'password'
+}
+```
+In return it expect the following response format
+```js
+{
+    token:'your jwt valid token',
+    user:{
+        ....,
+        permissions:[...]
+    }
+}
 ```
 
 ## Permits definition
