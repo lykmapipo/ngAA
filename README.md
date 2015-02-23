@@ -17,12 +17,11 @@ DRY authentication and authorization for angular and ui-router.
 - [ngstorage](https://github.com/gsklee/ngStorage)
 
 ## Install
-1. Bower install
 ```sh
-bower install --save ngAA
+$ bower install --save ngAA
 ```
 ## Usage
-1. include the `ngAA` into your app
+- Include the `ngAA` into your app
 ```html
 <!doctype html>
 <html ng-app="yourApp">
@@ -49,7 +48,7 @@ bower install --save ngAA
 </html>
 ```
 
-2. require `ngAA` module into your angular application or module
+- Require `ngAA` module into your angular application or module
 ```js
 angular
 .module('yourApp',[
