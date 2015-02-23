@@ -1,6 +1,6 @@
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.1.0 - Mon Feb 23 2015 11:15:32
+ * @version v0.1.0 - Mon Feb 23 2015 11:56:51
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -28,7 +28,6 @@
             //see https://github.com/angular-ui/ui-router
             'ui.router'
         ])
-        //configure http interceptor
         .config(['$httpProvider', '$stateProvider', 'jwtInterceptorProvider', 'ngAAConfig', function($httpProvider, $stateProvider, jwtInterceptorProvider, ngAAConfig) {
             //configure ngAA states
             $stateProvider
@@ -70,7 +69,7 @@
         .run(['$rootScope', '$state', 'ngAAConfig', 'User', '$auth', function($rootScope, $state, ngAAConfig, User, $auth) {
             //check for permits during state change
             $rootScope
-                .$on('$stateChangeStart', $auth.onStateChange);
+                .$on('$stateChangeStart', $auth._onStateChange);
 
             //handle backend 
             //http authorization errors
@@ -204,7 +203,6 @@
                     return User.signin(user);
                 };
 
-
                 $auth.signout = function() {
                     return User.logout();
                 };
@@ -234,7 +232,7 @@
                     return User.hasAnyPermission(checkPermissions);
                 };
 
-                $auth.onStateChange = function(event, toState, toParams, fromState, fromParams) {
+                $auth._onStateChange = function(event, toState, toParams, fromState, fromParams) {
                     // If there are permits defined in toState 
                     // then prevent default and attempt to authorize
                     var permits = Utils.getStatePermits(toState);
@@ -931,9 +929,7 @@
     /**
      * @ngdoc function
      * @name ngAA.controller:AuthCtrl
-     * @description
-     * # AuthCtrl
-     * Controller of the ngAA
+     * @description user authentication controller
      */
     angular
         .module('ngAA')
@@ -950,8 +946,18 @@
                 User
                     .signin($scope.user)
                     .then(function(response) {
+                        //clear email and password
+                        $scope.user.email = '';
+                        $scope.user.password = '';
+
+                        //broadcast signin success
                         $rootScope.$broadcast('signinSuccess', response);
-                        $rootScope.isAuthenticated = true;
+
+                        //set user authentication status
+                        $rootScope.isAuthenticated =
+                            User.isAuthenticatedSync();
+
+                        //redirect to after signin state
                         $state.go(ngAAConfig.afterSigninRedirectTo);
                     })
                     .catch(function(error) {

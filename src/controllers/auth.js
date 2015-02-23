@@ -4,9 +4,7 @@
     /**
      * @ngdoc function
      * @name ngAA.controller:AuthCtrl
-     * @description
-     * # AuthCtrl
-     * Controller of the ngAA
+     * @description user authentication controller
      */
     angular
         .module('ngAA')

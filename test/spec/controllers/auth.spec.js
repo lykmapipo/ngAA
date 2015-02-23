@@ -65,7 +65,7 @@ describe('ngAA:Controller:AuthCtrl', function() {
         expect(scope.user.password).to.exist;
     });
 
-    it('should be able to signin user', inject(function($rootScope, $state) {
+    it('should be able to signin user', inject(function($rootScope, $state, User) {
         authProvider.httpInterceptor = false;
         authProvider.signinUrl = '/signin';
         authProvider.profileKey = 'user';
@@ -109,6 +109,7 @@ describe('ngAA:Controller:AuthCtrl', function() {
         expect(signin).to.be.true;
         expect(signinSuccessEmitted).to.be.true;
         expect($state.current.name).to.equal('home');
+        expect(User.isAuthenticatedSync()).to.be.true;
     }));
 
 });
