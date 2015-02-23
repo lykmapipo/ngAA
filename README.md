@@ -64,9 +64,7 @@ config(function($stateProvider, $urlRouterProvider, $authProvider) {
 ## Configuration
 Out of the box `ngAA` will work if you follow its convection. But it is also an optionated and allow you to override its configuration through its `$authProvider`. Below is the detailed configuration options that you may ovveride
 
-| param | description |
-|---|---|
-| **afterSigninRedirectTo** | Specify which state to redirect user after signin successfully. Default to `home`. 
+- **afterSigninRedirectTo : ** Specify which state to redirect user after signin successfully. Default to `home`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -76,8 +74,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.afterSigninRedirectTo = 'dashboard';
 });
-``` |
-| **afterSignoutRedirectTo** | Specify to which state to redirect user after signout. Defaults to `signin`. 
+```
+
+- **afterSignoutRedirectTo : ** Specify to which state to redirect user after signout. Defaults to `signin`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -87,8 +86,8 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.afterSignoutRedirectTo = 'site';
 });
-``` |
-| **signinUrl** | Specify your backend end-point to be used by `ngAA` to signin your user. Default to `/signin`. 
+```
+- **signinUrl : ** Specify your backend end-point to be used by `ngAA` to signin your user. Default to `/signin`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -98,8 +97,8 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinUrl = '/auth/signin';
 });
-``` |
-| **signinState** | Specify signin state to be used when `ngAA`. Default to `signin`. 
+```
+- **signinState : ** Specify signin state to be used when `ngAA`. Default to `signin`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -109,8 +108,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinState = 'auth.signin';
 });
-``` |
-| **signinRoute** | Specify a signin route to be used with `ngAAAuthCtrl` internally. Default to `/signin`. 
+```
+
+- **signinRoute : ** Specify a signin route to be used with `ngAAAuthCtrl` internally. Default to `/signin`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -120,8 +120,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinRoute = '/auth/signin';
 });
-``` |
-| **signinTemplateUrl** | This is a required configuration which specify where you have put your user `signin` template. Default to `views/signin.html`. 
+```
+
+- **signinTemplateUrl : ** This is a required configuration which specify where you have put your user `signin` template. Default to `views/signin.html`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -131,8 +132,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.templateUrl = 'views/auth/signin.html';
 });
-``` |
-| **tokenPrefix** | A prefix to be used to prefix token and user profile in staorage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. 
+```
+
+- **tokenPrefix : ** A prefix to be used to prefix token and user profile in staorage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -142,8 +144,8 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.tokenPrefix = 'yourApp';
 });
-``` |
-| **tokenName** | Specify which key to use to retrieve token from the json response from the backend server. Default to `token`.
+```
+- **tokenName : ** Specify which key to use to retrieve token from the json response from the backend server. Default to `token`.
 You can override this default on your module config as: 
 ```js
 angular
@@ -153,8 +155,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.tokenName = 'token';
 });
-``` |
-| **profileKey** | Specify which key to use to retrieve user profile from the json response from the backend server. Default to `user`. 
+```
+
+- **profileKey : ** Specify which key to use to retrieve user profile from the json response from the backend server. Default to `user`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -164,8 +167,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.profileKey = 'profile';
 });
-```|
-| **storage** | Specify which storage you want to use to store user token and profile. There are only two option here, either `localStorage` or `sessionStorage` and default to `localStorage`.
+```
+
+- **storage** Specify which storage you want to use to store user token and profile. There are only two option here, either `localStorage` or `sessionStorage` and default to `localStorage`.
 You can override this default on your module config as: 
 ```js
 angular
@@ -175,8 +179,9 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.storage = 'sessionStorage';
 });
-```  |
-| **authHeader** | Http `Authorization` header. Default to `Authorization`. You can override this default on your module config as: 
+```
+
+- **authHeader** Http `Authorization` header. Default to `Authorization`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -185,7 +190,7 @@ angular
 config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.authHeader = 'your authorization header name';
 });
-``` |
+```
 
 ## Testing
 
