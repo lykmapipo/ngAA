@@ -10,7 +10,7 @@
      */
     angular
         .module('ngAA')
-        .factory('User', function($q, $location, $http, Token, ngAAConfig, Utils) {
+        .factory('User', function($q, $http, Token, ngAAConfig, Utils) {
             var $user = {};
 
             //store user profile 
@@ -227,6 +227,42 @@
 
                         return response;
                     });
+            };
+
+            //check user permits
+            //based on state permits
+            //definition
+            $user.checkPermits = function(permits) {
+                //check with only permission
+                var withOnly = permits.withOnly || undefined;
+
+                //check with all permissions
+                var withAll = permits.withAll || undefined;
+
+                //check with any permissions
+                var withAny = permits.withAny || undefined;
+
+                //order permission to check
+                //based on order of precedence
+                var checkPemits;
+
+                if (withAny) {
+                    checkPemits =
+                        $user.hasAnyPermission(withAny);
+                }
+
+                if (withAll) {
+                    checkPemits =
+                        $user.hasPermissions(withAll);
+                }
+
+                if (withOnly) {
+                    checkPemits =
+                        $user.hasPermission(withOnly);
+                }
+
+                return checkPemits;
+
             };
 
             return $user;

@@ -1,6 +1,6 @@
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.1.0 - Sun Feb 22 2015 16:24:47
+ * @version v0.1.0 - Mon Feb 23 2015 11:15:32
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -67,118 +67,27 @@
             //see https://github.com/auth0/angular-jwt#jwtinterceptor
             $httpProvider.interceptors.push('jwtInterceptor');
         }])
-        .run(['$rootScope', '$state', 'ngAAConfig', 'User', function($rootScope, $state, ngAAConfig, User) {
-            //check for permit during state change
+        .run(['$rootScope', '$state', 'ngAAConfig', 'User', '$auth', function($rootScope, $state, ngAAConfig, User, $auth) {
+            //check for permits during state change
             $rootScope
-                .$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-                    // If there are permits defined in toState 
-                    // then prevent default and attempt to authorize
-                    var permits;
-                    if (toState.data && toState.data.permits) {
-                        permits = toState.data.permits;
-                    }
+                .$on('$stateChangeStart', $auth.onStateChange);
 
-                    //if there are permits
-                    //defined and state is not `$authProvider.signinState`
-                    //prevent default state change
-                    //and chech permits
-                    //before transition to state
-                    if (permits && toState.name !== ngAAConfig.signinState) {
+            //handle backend 
+            //http authorization errors
+            $rootScope
+                .$on('unauthenticated', function(event, response) {
+                    //broadcast authorization error
+                    $rootScope
+                        .$broadcast('authorizationError', response);
 
-                        event.preventDefault();
-
-                        //check only permissions
-                        var withOnly = permits.withOnly || undefined;
-
-                        //check with all permissions
-                        var withAll = permits.withAll || undefined;
-
-                        //check with any permissions
-                        var withAny = permits.withAny || undefined;
-
-                        //order permission to check
-                        //based on order of precedence
-                        var checkPermission;
-                        if (withAny) {
-                            checkPermission =
-                                User.hasAnyPermission(withAny);
-                        }
-                        if (withAll) {
-                            checkPermission =
-                                User.hasPermissions(withAll);
-                        }
-                        if (withOnly) {
-                            checkPermission =
-                                User.hasPermission(withOnly);
-                        }
-
-                        //check if authentication is required
-                        //check if user is authenticated
-                        //and has permission
-                        User
-                            .isAuthenticated()
-                            .then(function(isAuthenticated) {
-                                //if not authenticated
-                                //throw exception
-                                //and redirect to signin
-                                if (!isAuthenticated) {
-                                    //broadcast the error
-                                    $rootScope
-                                        .$broadcast('$stateChangePermissionDenied', 'Not authenticated');
-
-                                    //and redirect user to signin
-                                    $state.go(ngAAConfig.signinState);
-                                }
-                                //user is authenticated
-                                //chech for profile permissions 
-                                else {
-                                    checkPermission
-                                        .then(function(hasPermit) {
-                                            //if has no permit
-                                            //broadcast execptions and
-                                            //redirect to signin
-                                            if (!hasPermit) {
-                                                //broadcast the error
-                                                $rootScope
-                                                    .$broadcast('$stateChangePermissionDenied', 'Not permitted');
-
-                                                //and redirect user to signin
-                                                $state.go(ngAAConfig.signinState);
-                                            }
-                                            //user is authenticated
-                                            //and permitted
-                                            //continue to next state
-                                            else {
-                                                // If authorized, use call state.go without triggering the event.
-                                                // Then trigger $stateChangeSuccess manually to resume the rest of the process
-                                                // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
-                                                $rootScope
-                                                    .$broadcast('$stateChangePermissionAccepted', toState, toParams);
-
-                                                $state
-                                                    .go(toState.name, toParams, {
-                                                        notify: false
-                                                    })
-                                                    .then(function() {
-                                                        $rootScope
-                                                            .$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
-                                                    });
-                                            }
-                                        });
-                                }
-                            });
-                    }
-                    //no permits defined
-                    //continue with normal state change
-                    else {
-                        return;
-                    }
+                    //redirect user to signin
+                    //state
+                    $state.go(ngAAConfig.signinState);
                 });
 
-            //reload user on application browser refresh
-            //otherwise redirect to `ngAAConfig.signinState`
-            //
             //expose `isAuthenticated` in $rootScope
+            //so that it can be used in views
+            //and demanding controllers
             $rootScope.isAuthenticated = User.isAuthenticatedSync();
         }]);
 
@@ -202,15 +111,15 @@
             //are available
             httpInterceptor: true,
 
-            //application route
+            //application state
             //to redirect user 
             //after signin
-            afterSigninRedirectTo: '/home',
+            afterSigninRedirectTo: 'home',
 
-            //application route
+            //application state
             //to redirect user
             //after signout
-            afterSignoutRedirectTo: '/signin',
+            afterSignoutRedirectTo: 'signin',
 
             //backend or api signin endpoint
             signinUrl: '/signin',
@@ -288,7 +197,7 @@
                 });
 
             //$auth service factory fuction
-            self.$get = ['Token', 'User', function(Token, User) {
+            self.$get = ['Utils', 'Token', 'User', 'ngAAConfig', '$rootScope', '$state', function(Utils, Token, User, ngAAConfig, $rootScope, $state) {
                 var $auth = {};
 
                 $auth.signin = function(user) {
@@ -312,7 +221,7 @@
                     return User.getProfile();
                 };
 
-                
+
                 $auth.hasPermission = function(permission) {
                     return User.hasPermission(permission);
                 };
@@ -323,6 +232,101 @@
 
                 $auth.hasAnyPermission = function(checkPermissions) {
                     return User.hasAnyPermission(checkPermissions);
+                };
+
+                $auth.onStateChange = function(event, toState, toParams, fromState, fromParams) {
+                    // If there are permits defined in toState 
+                    // then prevent default and attempt to authorize
+                    var permits = Utils.getStatePermits(toState);
+
+                    //if there are permits
+                    //defined and state is not signinState
+                    //prevent default state change
+                    //and chech permits
+                    //before transition to state
+                    var shouldCheckPermits =
+                        permits &&
+                        toState.name !== ngAAConfig.signinState;
+
+                    if (shouldCheckPermits) {
+                        //prevent default state transition
+                        event.preventDefault();
+
+                        //check if user is authenticated
+                        //and has permission
+                        User
+                            .isAuthenticated()
+                            .then(function(isAuthenticated) {
+                                //if not authenticated
+                                //throw exception
+                                if (!isAuthenticated) {
+                                    throw new Error('Not authenticated');
+                                }
+
+                                //user is authenticated
+                                //chech for profile permissions 
+                                else {
+                                    User
+                                        .checkPermits(permits)
+                                        .then(function(hasPermit) {
+                                            //if has no permit
+                                            //broadcast execptions and
+                                            //redirect to signin
+                                            if (!hasPermit) {
+                                                throw new Error('Not permitted');
+                                            }
+
+                                            //user is authenticated
+                                            //and permitted
+                                            //continue to next state
+                                            else {
+                                                // If authorized, use call state.go without triggering the event.
+                                                // Then trigger $stateChangeSuccess manually to resume the rest of the process
+                                                // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
+                                                $rootScope
+                                                    .$broadcast(
+                                                        '$permissionAccepted',
+                                                        toState,
+                                                        toParams
+                                                    );
+
+                                                $state
+                                                    .go(
+                                                        toState.name,
+                                                        toParams, {
+                                                            notify: false
+                                                        })
+                                                    .then(function() {
+                                                        $rootScope
+                                                            .$broadcast(
+                                                                '$stateChangeSuccess',
+                                                                toState,
+                                                                toParams,
+                                                                fromState,
+                                                                fromParams
+                                                            );
+                                                    });
+                                            }
+                                        });
+                                }
+                            })
+                            .catch(function(error) {
+                                //broadcast the error
+                                $rootScope
+                                    .$broadcast(
+                                        'permissionDenied',
+                                        error.message
+                                    );
+
+                                //and redirect user to signin state
+                                $state.go(ngAAConfig.signinState);
+                            });
+                    }
+                    //no permits defined
+                    //continue with normal state change
+                    else {
+                        return;
+                    }
                 };
 
                 return $auth;
@@ -491,7 +495,7 @@
      */
     angular
         .module('ngAA')
-        .factory('User', ['$q', '$location', '$http', 'Token', 'ngAAConfig', 'Utils', function($q, $location, $http, Token, ngAAConfig, Utils) {
+        .factory('User', ['$q', '$http', 'Token', 'ngAAConfig', 'Utils', function($q, $http, Token, ngAAConfig, Utils) {
             var $user = {};
 
             //store user profile 
@@ -710,6 +714,42 @@
                     });
             };
 
+            //check user permits
+            //based on state permits
+            //definition
+            $user.checkPermits = function(permits) {
+                //check with only permission
+                var withOnly = permits.withOnly || undefined;
+
+                //check with all permissions
+                var withAll = permits.withAll || undefined;
+
+                //check with any permissions
+                var withAny = permits.withAny || undefined;
+
+                //order permission to check
+                //based on order of precedence
+                var checkPemits;
+
+                if (withAny) {
+                    checkPemits =
+                        $user.hasAnyPermission(withAny);
+                }
+
+                if (withAll) {
+                    checkPemits =
+                        $user.hasPermissions(withAll);
+                }
+
+                if (withOnly) {
+                    checkPemits =
+                        $user.hasPermission(withOnly);
+                }
+
+                return checkPemits;
+
+            };
+
             return $user;
         }]);
 
@@ -795,6 +835,22 @@
                 return includesAny;
 
             };
+            //get state defined
+            //permits
+            $utils.getStatePermits = function(state) {
+                var permits;
+
+                //check if state has 
+                //data hash definition
+                //and permits definition
+                //and grab the permits
+                //from it
+                if (state.data && state.data.permits) {
+                    permits = state.data.permits;
+                }
+
+                return permits;
+            };
 
             return $utils;
         });
@@ -805,9 +861,16 @@
     'use strict';
 
     /**
-     * @ngdoc function
+     * @ngdoc directive
      * @name ngAA.directive:signout
-     * @description signout current user
+     * @description signout current signin user.
+     *              It will clear the current user
+     *              token and its profile from the storage.
+     *
+     * @example
+     *         <li ng-show="isAuthenticated">
+     *              <a href="" data-signout>Signout</a>
+     *           </li>
      */
     angular
         .module('ngAA')
@@ -816,28 +879,46 @@
                 restrict: 'A',
                 link: function(scope, element) {
 
+                    //signout event handler
                     function signout(event) {
-
+                        //prevent any of the default
+                        //behaviour of the event fired
                         event.preventDefault();
 
+                        //signout the current user
                         User
                             .signout()
                             .then(function() {
+                                //broadcast user signed
+                                //out successfully
                                 $rootScope.$broadcast('signoutSuccess');
-                                $rootScope.isAuthenticated = false;
-                                // $location.path(ngAAConfig.afterSignoutRedirectTo);
-                                $state.go(ngAAConfig.afterSignoutRedirectTo);
+
+                                //update user authenticity status
+                                $rootScope.isAuthenticated =
+                                    User.isAuthenticatedSync();
+
+                                //redirect to after signout
+                                //state
+                                $state
+                                    .go(ngAAConfig.afterSignoutRedirectTo);
                             })
                             .catch(function(error) {
-                                $rootScope.$broadcast('signoutError', error.message);
+                                //broadcats any
+                                //error encountered during
+                                //signout
+                                $rootScope
+                                    .$broadcast('signoutError', error.message);
                             });
 
                     }
 
-                    //attach listener
-                    element.on ?
-                        element.on('click', signout) :
+                    //attach event listener
+                    //on the element
+                    if (element.on) {
+                        element.on('click', signout);
+                    } else {
                         element.bind('click', signout);
+                    }
                 }
             };
         }]);

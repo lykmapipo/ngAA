@@ -78,6 +78,22 @@
                 return includesAny;
 
             };
+            //get state defined
+            //permits
+            $utils.getStatePermits = function(state) {
+                var permits;
+
+                //check if state has 
+                //data hash definition
+                //and permits definition
+                //and grab the permits
+                //from it
+                if (state.data && state.data.permits) {
+                    permits = state.data.permits;
+                }
+
+                return permits;
+            };
 
             return $utils;
         });

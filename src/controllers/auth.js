@@ -23,8 +23,18 @@
                 User
                     .signin($scope.user)
                     .then(function(response) {
+                        //clear email and password
+                        $scope.user.email = '';
+                        $scope.user.password = '';
+
+                        //broadcast signin success
                         $rootScope.$broadcast('signinSuccess', response);
-                        $rootScope.isAuthenticated = true;
+
+                        //set user authentication status
+                        $rootScope.isAuthenticated =
+                            User.isAuthenticatedSync();
+
+                        //redirect to after signin state
                         $state.go(ngAAConfig.afterSigninRedirectTo);
                     })
                     .catch(function(error) {
