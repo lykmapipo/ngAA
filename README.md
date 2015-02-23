@@ -15,7 +15,7 @@ It uses [json web tokens](http://jwt.io/) `jwt` and Authorization header for mos
 
 ## Install
 ```sh
-$ bower install --save ngAA
+$ bower install --save ng-aa
 ```
 ## Usage
 - **Include `ngAA` into your app index.html**
