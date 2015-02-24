@@ -7,7 +7,7 @@ ngAA
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/lykmapipo/)
 
 DRY authentication and authorization for angular and ui-router.
-It uses [json web tokens](http://jwt.io/) and Authorization header for most of it workflow.
+It uses [json web tokens](http://jwt.io/) authorization header for it authentication workflow and [permits](https://github.com/lykmapipo/ngAA#permits) to restrict state access.
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
@@ -18,9 +18,9 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
 * [Install](https://github.com/lykmapipo/ngAA#install)
 * [Usage](https://github.com/lykmapipo/ngAA#usage)
 * [Permits](https://github.com/lykmapipo/ngAA#permits)
-    *[`withOnly`]() 
-    *[`withAll`]() 
-    *[`withAny`]() 
+    * [`withOnly`](https://github.com/lykmapipo/ngAA#withonly) 
+    * [`withAll`](https://github.com/lykmapipo/ngAA#withall) 
+    * [`withAny`](https://github.com/lykmapipo/ngAA#withany) 
 * [$auth API](https://github.com/lykmapipo/ngAA#auth-api)
   * [`$auth.signout`](https://github.com/lykmapipo/ngAA#authsignout)
   * [`$auth.isAuthenticated`](https://github.com/lykmapipo/ngAA#authisauthenticated)
@@ -193,7 +193,7 @@ angular
 
 
 ### withAll 
-Which tells `ngAA` to allow user with all given permission to access the state. To tell `ngAA` to permit user with all given permissions in your state definition, you do as bellow:
+Which tells `ngAA` to allow user with all given permissions to access the state. To tell `ngAA` to permit user with all given permissions in your state definition, you do as bellow:
 ```js
 'use strict';
 angular
@@ -219,7 +219,7 @@ angular
 
 
 ### withAny
-Which tells `ngAA` to allow user with any of the given permission to access the state. To tell `ngAA` to permit user with any of the given permissions in your state definition, you do as bellow:
+Which tells `ngAA` to allow user with any of the given permissions to access the state. To tell `ngAA` to permit user with any of the given permissions in your state definition, you do as bellow:
 ```js
 'use strict';
 angular
