@@ -510,34 +510,32 @@ angular
 });
 ```
 
-## Testing, Demo & Development
-
+## Testing
 * Clone this repository
-
 * Install all development dependencies
 ```sh
 $ npm install && bower install
 ```
-
 * Then run test
 ```sh
 $ npm test
 ```
 
-* To run demo use
+## Demo
+`ngAA` repository has a `example` witch can lauched by
 ```sh
 $ grunt serve
 ```
 
-* To watch your development use
+## Development
+`ngAA` has set of useful `grunt` task to help you with development. By running
 ```sh
 $ grunt
 ```
+`ngAA` will be able watch your development environment for file changes and apply `jshint` and `karma` to the project.
 
 ## Contribute
-
-Fork this repo and push in your ideas. 
-Do not forget to add a bit of test(s) of what value you adding.
+Fork this repo and push in your ideas. Do not forget to add a bit of test(s) of what value you adding.
 
 ## Licence
 
