@@ -18,7 +18,7 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
 $ bower install --save ng-aa
 ```
 ## Usage
-- **Include `ngAA` into your app index.html**
+- Include `ngAA` into your app index.html 
 ```html
 <!doctype html>
 <html ng-app="yourApp">
@@ -44,7 +44,7 @@ $ bower install --save ng-aa
 </body>
 </html>
 ```
-- **Define your signin template to be used by `ngAA` at `views/signin.html`**
+- Define your signin template to be used by `ngAA` at `views/signin.html`
 ```html
 <form ng-submit="signin()" role="form" autocomplete="off">
     <legend>Login</legend>
@@ -63,7 +63,7 @@ $ bower install --save ng-aa
 </form>
 ```
 
-- **Require `ngAA` module into your angular application or module and define your redirect states**
+- Require `ngAA` module into your angular application or module and define your redirect states 
 ```js
 angular
 .module('yourApp',[
@@ -77,7 +77,8 @@ angular
 });
 ```
 
-- **[Define your application states to include `permits` to restrict access](https://github.com/lykmapipo/ngAA#permits-definition)**
+- Define your application states and include `permits` defititions to restrict access
+[More about application permits definitions here](ttps://github.com/lykmapipo/ngAA#permits-definition)
 ```js
 $stateProvider
     .state('main', {
@@ -112,7 +113,7 @@ $stateProvider
     });
 ```
 
-- **Implements your backend signin end point**
+- Implements your backend signin end point
 `ngAA` expect you to implement your backend end point using your language of choice. It will send user credentials for signin in the following format
 ```js
 {
