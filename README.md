@@ -7,7 +7,7 @@ ngAA
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/lykmapipo/)
 
 DRY authentication and authorization for angular and ui-router.
-It uses [json web tokens](http://jwt.io/) `jwt` and Authorization header for most of it workflow.
+It uses [json web tokens](http://jwt.io/) and Authorization header for most of it workflow.
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
@@ -69,7 +69,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         //configure after user signin redirect state
         $authProvider.afterSigninRedirectTo = 'contact';
         //configure after user signout redirect state
@@ -266,7 +266,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.afterSigninRedirectTo = 'dashboard';
 });
 ```
@@ -278,7 +278,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.afterSignoutRedirectTo = 'site';
 });
 ```
@@ -289,7 +289,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinUrl = '/auth/signin';
 });
 ```
@@ -300,7 +300,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinState = 'auth.signin';
 });
 ```
@@ -312,7 +312,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.signinRoute = '/auth/signin';
 });
 ```
@@ -324,7 +324,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.templateUrl = 'views/auth/signin.html';
 });
 ```
@@ -336,7 +336,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.tokenPrefix = 'yourApp';
 });
 ```
@@ -347,7 +347,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.tokenName = 'token';
 });
 ```
@@ -359,7 +359,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.profileKey = 'profile';
 });
 ```
@@ -371,7 +371,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.storage = 'sessionStorage';
 });
 ```
@@ -382,7 +382,7 @@ angular
 .module('yourApp',[
 'ngAA'
 ])
-config(function($stateProvider, $urlRouterProvider, $authProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
         $authProvider.authHeader = 'your authorization header name';
 });
 ```
