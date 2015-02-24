@@ -19,16 +19,27 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
 * [Usage](https://github.com/lykmapipo/ngAA#usage)
 * [Permits definition](https://github.com/lykmapipo/ngAA#permits-definition)
 * [$auth API](https://github.com/lykmapipo/ngAA#auth-api)
-  * [`$auth.signout`]()
-  * [`$auth.isAuthenticated`]()
-  * [`$auth.isAuthenticatedSync`]()
+  * [`$auth.signout`](https://github.com/lykmapipo/ngAA#authsignout)
+  * [`$auth.isAuthenticated`](https://github.com/lykmapipo/ngAA#authisauthenticated)
+  * [`$auth.isAuthenticatedSync`](https://github.com/lykmapipo/ngAA#authisauthenticated)
   * [`$auth.getClaim`]()
-  * [`$auth.getProfile`]()
-  * [`$auth.hasPermission`]()
-  * [`$auth.hasPermissions`]()
-  * [`$auth.hasAnyPermission`]()
-* [Directives]()
-* [Configurations]()
+  * [`$auth.getProfile`](https://github.com/lykmapipo/ngAA#authgetprofile)
+  * [`$auth.hasPermission`](https://github.com/lykmapipo/ngAA#authhaspermission)
+  * [`$auth.hasPermissions`](https://github.com/lykmapipo/ngAA#authhaspermissions)
+  * [`$auth.hasAnyPermission`](https://github.com/lykmapipo/ngAA#authhasanypermission)
+* [Directives](https://github.com/lykmapipo/ngAA#directives)
+* [Configurations](https://github.com/lykmapipo/ngAA#configuration)
+    * [`afterSigninRedirectTo`](https://github.com/lykmapipo/ngAA#aftersigninredirectto) 
+    * [`afterSignoutRedirectTo`](https://github.com/lykmapipo/ngAA#aftersignoutredirectto) 
+    * [`signinUrl`](https://github.com/lykmapipo/ngAA#signinurl) 
+    * [`signinState`](https://github.com/lykmapipo/ngAA#signinstate) 
+    * [`signinRoute`](https://github.com/lykmapipo/ngAA#signinroute) 
+    * [`signinTemplateUrl`](https://github.com/lykmapipo/ngAA#signintemplateurl) 
+    * [`tokenPrefix`](https://github.com/lykmapipo/ngAA#tokenprefix) 
+    * [`tokenName`](https://github.com/lykmapipo/ngAA#tokenname) 
+    * [`profileKey`](https://github.com/lykmapipo/ngAA#profilekey) 
+    * [`storage`](https://github.com/lykmapipo/ngAA#storage) 
+    * [`authHeader`](https://github.com/lykmapipo/ngAA#authheader) 
 
 
 ## Install
@@ -194,7 +205,8 @@ This is the synchronous version of `isAuthenticated`.
 $rootScope.isAuthenticated = $auth.isAuthenticatedSync();
 ```
 
-- **$auth.getClaim :** Used to get current user `claim` from the token.
+### $auth.getClaim
+Used to get current user `claim` from the token.
 ```js
 $auth
     .getClaim()
