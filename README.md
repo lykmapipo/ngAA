@@ -17,7 +17,10 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
 
 * [Install](https://github.com/lykmapipo/ngAA#install)
 * [Usage](https://github.com/lykmapipo/ngAA#usage)
-* [Permits definition](https://github.com/lykmapipo/ngAA#permits-definition)
+* [Permits](https://github.com/lykmapipo/ngAA#permits)
+    *[`withOnly`]() 
+    *[`withAll`]() 
+    *[`withAny`]() 
 * [$auth API](https://github.com/lykmapipo/ngAA#auth-api)
   * [`$auth.signout`](https://github.com/lykmapipo/ngAA#authsignout)
   * [`$auth.isAuthenticated`](https://github.com/lykmapipo/ngAA#authisauthenticated)
@@ -106,7 +109,7 @@ angular
 });
 ```
 
-- Define your application states and include `permits` defititions to restrict access. [More about application permits definitions here](https://github.com/lykmapipo/ngAA#permits-definition)
+- Define your application states and include `permits` defititions to restrict access.
 ```js
 $stateProvider
     .state('main', {
@@ -160,12 +163,86 @@ In return it expect the following response format
 }
 ```
 
-## Permits definition
-`ngAA` restrict state transition to only allowed user using `permits` state data. `permits` expect to receive the following definition:
+## Permits
+`ngAA` restrict state transition to only allowed user using `permits` state data. If there is no `permits` state data, `ngAA` wont protect the state. You should define your `permits` using one the following:
 
-- `withOnly` : Which tells `ngAA` to allow user with only provided permission to access the state.
-- `withAll` : Which tells `ngAA` to allow user with all given permission to access the state.
-- `withAny` : Which tells `ngAA` to allow user with any of the given permission to access the state.
+### withOnly 
+Which tells `ngAA` to allow user with only provided permission to access the state. To tell `ngAA` to permit user with only one permission in your state definition, you do as bellow:
+```js
+'use strict';
+angular
+    .module('ngAPP', [
+        'ui.router',
+        'ngAA'
+    ])
+    .config(function($stateProvider, $urlRouterProvider, $authProvider) {
+        $stateProvider
+            .state('about', {
+                url: '/about',
+                templateUrl: 'views/about.html',
+                controller: 'AboutCtrl',
+                data: {
+                    permits: {
+                        withOnly: 'Post:delete'
+                    }
+                }
+            });
+            ...
+    });
+```
+
+
+### withAll 
+Which tells `ngAA` to allow user with all given permission to access the state. To tell `ngAA` to permit user with all given permissions in your state definition, you do as bellow:
+```js
+'use strict';
+angular
+    .module('ngAPP', [
+        'ui.router',
+        'ngAA'
+    ])
+    .config(function($stateProvider, $urlRouterProvider, $authProvider) {
+        $stateProvider
+            .state('about', {
+                url: '/about',
+                templateUrl: 'views/about.html',
+                controller: 'AboutCtrl',
+                data: {
+                    permits: {
+                        withAll: ['Post:delete','Post:create']
+                    }
+                }
+            });
+            ...
+    });
+```
+
+
+### withAny
+Which tells `ngAA` to allow user with any of the given permission to access the state. To tell `ngAA` to permit user with any of the given permissions in your state definition, you do as bellow:
+```js
+'use strict';
+angular
+    .module('ngAPP', [
+        'ui.router',
+        'ngAA'
+    ])
+    .config(function($stateProvider, $urlRouterProvider, $authProvider) {
+        $stateProvider
+            .state('about', {
+                url: '/about',
+                templateUrl: 'views/about.html',
+                controller: 'AboutCtrl',
+                data: {
+                    permits: {
+                        withAny: ['Post:delete','Comment:delete']
+                    }
+                }
+            });
+            ...
+    });
+```
+
 
 ## $auth API
 `ngAA $auth` service expose the following API to be used.
