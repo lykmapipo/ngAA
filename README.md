@@ -11,7 +11,7 @@ It uses [json web tokens](http://jwt.io/) and http authorization header for it a
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
-[Demo](https://github.com/lykmapipo/ngAA#testing--demo--development)
+[Demo](https://github.com/lykmapipo/ngAA#demo)
 
 ## Guide
 
@@ -25,7 +25,7 @@ It uses [json web tokens](http://jwt.io/) and http authorization header for it a
   * [`$auth.signout`](https://github.com/lykmapipo/ngAA#authsignout)
   * [`$auth.isAuthenticated`](https://github.com/lykmapipo/ngAA#authisauthenticated)
   * [`$auth.isAuthenticatedSync`](https://github.com/lykmapipo/ngAA#authisauthenticated)
-  * [`$auth.getClaim`]()
+  * [`$auth.getClaim`](https://github.com/lykmapipo/ngAA#authgetclaim)
   * [`$auth.getProfile`](https://github.com/lykmapipo/ngAA#authgetprofile)
   * [`$auth.hasPermission`](https://github.com/lykmapipo/ngAA#authhaspermission)
   * [`$auth.hasPermissions`](https://github.com/lykmapipo/ngAA#authhaspermissions)
@@ -43,9 +43,9 @@ It uses [json web tokens](http://jwt.io/) and http authorization header for it a
     * [`profileKey`](https://github.com/lykmapipo/ngAA#profilekey) 
     * [`storage`](https://github.com/lykmapipo/ngAA#storage) 
     * [`authHeader`](https://github.com/lykmapipo/ngAA#authheader)
-* [Testing]()
-* [Development]()
-* [Contribute]()
+* [Testing](https://github.com/lykmapipo/ngAA#testing)
+* [Development](https://github.com/lykmapipo/ngAA#development)
+* [Contribute](https://github.com/lykmapipo/ngAA#contribute)
 
 
 
@@ -528,7 +528,7 @@ $ grunt serve
 ```
 
 ## Development
-`ngAA` has set of useful `grunt` task to help you with development. By running
+`ngAA` has set of useful `grunt` tasks to help you with development. By running
 ```sh
 $ grunt
 ```
