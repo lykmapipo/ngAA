@@ -13,6 +13,24 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
 
 [Demo](https://github.com/lykmapipo/ngAA#testing--demo--development)
 
+## Guide
+
+* [Install](https://github.com/lykmapipo/ngAA#install)
+* [Usage](https://github.com/lykmapipo/ngAA#usage)
+* [Permits definition]()
+* [$auth API]()
+  * [`$auth.signout`]()
+  * [`$auth.isAuthenticated`]()
+  * [`$auth.isAuthenticatedSync`]()
+  * [`$auth.getClaim`]()
+  * [`$auth.getProfile`]()
+  * [`$auth.hasPermission`]()
+  * [`$auth.hasPermissions`]()
+  * [`$auth.hasAnyPermission`]()
+ [Directives]()
+ [Configurations]()
+
+
 ## Install
 ```sh
 $ bower install --save ng-aa
@@ -44,7 +62,7 @@ $ bower install --save ng-aa
 </body>
 </html>
 ```
-- Define your signin template to be used by `ngAA` at `views/signin.html`
+- Define your `signin` template to be used by `ngAA` at `views/signin.html`
 ```html
 <form ng-submit="signin()" role="form" autocomplete="off">
     <legend>Login</legend>
