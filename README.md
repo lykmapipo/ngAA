@@ -7,7 +7,7 @@ ngAA
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/lykmapipo/)
 
 DRY authentication and authorization for angular and ui-router.
-It uses [json web tokens](http://jwt.io/) authorization header for it authentication workflow and [permits](https://github.com/lykmapipo/ngAA#permits) to restrict state access.
+It uses [json web tokens](http://jwt.io/) and http authorization header for it authentication workflow and restrict state access by [permits](https://github.com/lykmapipo/ngAA#permits).
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
@@ -42,7 +42,11 @@ It uses [json web tokens](http://jwt.io/) authorization header for it authentica
     * [`tokenName`](https://github.com/lykmapipo/ngAA#tokenname) 
     * [`profileKey`](https://github.com/lykmapipo/ngAA#profilekey) 
     * [`storage`](https://github.com/lykmapipo/ngAA#storage) 
-    * [`authHeader`](https://github.com/lykmapipo/ngAA#authheader) 
+    * [`authHeader`](https://github.com/lykmapipo/ngAA#authheader)
+* [Testing]()
+* [Development]()
+* [Contribute]()
+
 
 
 ## Install
@@ -506,7 +510,7 @@ angular
 });
 ```
 
-## Testing && Demo && Development
+## Testing, Demo & Development
 
 * Clone this repository
 
