@@ -17,8 +17,8 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
 
 * [Install](https://github.com/lykmapipo/ngAA#install)
 * [Usage](https://github.com/lykmapipo/ngAA#usage)
-* [Permits definition]()
-* [$auth API]()
+* [Permits definition](https://github.com/lykmapipo/ngAA#permits-definition)
+* [$auth API](https://github.com/lykmapipo/ngAA#auth-api)
   * [`$auth.signout`]()
   * [`$auth.isAuthenticated`]()
   * [`$auth.isAuthenticatedSync`]()
@@ -27,8 +27,8 @@ It uses [json web tokens](http://jwt.io/) and Authorization header for most of i
   * [`$auth.hasPermission`]()
   * [`$auth.hasPermissions`]()
   * [`$auth.hasAnyPermission`]()
- [Directives]()
- [Configurations]()
+* [Directives]()
+* [Configurations]()
 
 
 ## Install
@@ -95,8 +95,7 @@ angular
 });
 ```
 
-- Define your application states and include `permits` defititions to restrict access
-[More about application permits definitions here](ttps://github.com/lykmapipo/ngAA#permits-definition)
+- Define your application states and include `permits` defititions to restrict access. [More about application permits definitions here](https://github.com/lykmapipo/ngAA#permits-definition)
 ```js
 $stateProvider
     .state('main', {
@@ -160,7 +159,8 @@ In return it expect the following response format
 ## $auth API
 `ngAA $auth` service expose the following API to be used.
 
-- **$auth.signout :** Used to signout current signin user.
+### $auth.signout
+Used to signout current signin user.
 ```js
 $auth
     .signout()
@@ -173,7 +173,8 @@ $auth
         ...
     });
 ```
-- **$auth.isAuthenticated :** Used to check if user is authenticated.
+### $auth.isAuthenticated
+Used to check if user is authenticated.
 ```js
 $auth
     .isAuthenticated()
@@ -187,7 +188,8 @@ $auth
     });
 ```
 
-- **$auth.isAuthenticatedSync :** This is the synchronous version of `isAuthenticated`.
+### $auth.isAuthenticatedSync
+This is the synchronous version of `isAuthenticated`.
 ```js
 $rootScope.isAuthenticated = $auth.isAuthenticatedSync();
 ```
@@ -205,7 +207,9 @@ $auth
         ...
     });   
 ```
-- **$auth.getProfile :** Used to get current uer profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
+
+### $auth.getProfile
+Used to get current uer profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
 ```js
 $stateProvider
     .state('contact', {
@@ -225,7 +229,8 @@ $stateProvider
     });   
 ```
 
-- **$auth.hasPermission :** Used to check if user has a given permission.
+### $auth.hasPermission
+Used to check if user has a given permission.
 ```js
 $auth
     .hasPermission('Post:create')
@@ -239,7 +244,8 @@ $auth
     }); 
 ```
 
-- **$auth.hasPermissions :** Used to check if user has all permissions
+### $auth.hasPermissions
+Used to check if user has all permissions
 ```js
 $auth
     .hasPermissions(['Post:create','Post:edit'])
@@ -253,7 +259,8 @@ $auth
     }); 
 ```
     
-- **$auth.hasAnyPermission :** Used to check if user has any of the permissions
+### $auth.hasAnyPermission
+Used to check if user has any of the permissions
 ```js
 $auth
     .hasAnyPermission(['Post:create','Post:edit'])
@@ -278,8 +285,8 @@ $auth
 ## Configuration
 Out of the box `ngAA` will work if you follow its convection. But it is also an optionated and allows you to override its configuration through its `$authProvider`. Below is the detailed configuration options that you may override
 
-- **afterSigninRedirectTo :** Specify which state to redirect user after signin successfully. Default to `home`. 
-You can override this default on your module config as: 
+### afterSigninRedirectTo
+Specify which state to redirect user after signin successfully. Default to `home`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -290,7 +297,8 @@ angular
 });
 ```
 
-- **afterSignoutRedirectTo :** Specify to which state to redirect user after signout. Defaults to `signin`. 
+### afterSignoutRedirectTo
+Specify to which state to redirect user after signout. Defaults to `signin`. 
 You can override this default on your module config as: 
 ```js
 angular
@@ -301,8 +309,9 @@ angular
         $authProvider.afterSignoutRedirectTo = 'site';
 });
 ```
-- **signinUrl :** Specify your backend end-point to be used by `ngAA` to signin your user. Default to `/signin`. 
-You can override this default on your module config as: 
+
+### signinUrl
+Specify your backend end-point to be used by `ngAA` to signin your user. Default to `/signin`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -312,8 +321,8 @@ angular
         $authProvider.signinUrl = '/auth/signin';
 });
 ```
-- **signinState :** Specify signin state to be used when `ngAA` when configuring it `ngAAAuthCtrl`. Default to `signin`. 
-You can override this default on your module config as: 
+### signinState
+Specify signin state to be used when `ngAA` when configuring it `ngAAAuthCtrl`. Default to `signin`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -324,8 +333,8 @@ angular
 });
 ```
 
-- **signinRoute :** Specify a signin route to be used with `ngAAAuthCtrl` internally. Default to `/signin`. 
-You can override this default on your module config as: 
+### signinRoute 
+Specify a signin route to be used with `ngAAAuthCtrl` internally. Default to `/signin`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -336,8 +345,8 @@ angular
 });
 ```
 
-- **signinTemplateUrl :** This is a required configuration which specify where you have put your user `signin` template. Default to `views/signin.html`. 
-You can override this default on your module config as: 
+### signinTemplateUrl
+This is a required configuration which specify where you have put your user `signin` template. Default to `views/signin.html`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -348,8 +357,8 @@ angular
 });
 ```
 
-- **tokenPrefix :** A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. 
-You can override this default on your module config as: 
+### tokenPrefix 
+A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -359,8 +368,9 @@ angular
         $authProvider.tokenPrefix = 'yourApp';
 });
 ```
-- **tokenName :** Specify which key to use to retrieve token from the json response from the backend server. Default to `token`.
-You can override this default on your module config as: 
+
+### tokenName
+Specify which key to use to retrieve token from the json response from the backend server. Default to `token`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -371,8 +381,8 @@ angular
 });
 ```
 
-- **profileKey :** Specify which key to use to retrieve user profile from the json response from the backend server. Default to `user`. 
-You can override this default on your module config as: 
+### profileKey
+Specify which key to use to retrieve user profile from the json response from the backend server. Default to `user`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -383,8 +393,8 @@ angular
 });
 ```
 
-- **storage** Specify which storage you want to use to store user token and profile. There are only two option here, either `localStorage` or `sessionStorage` and default to `localStorage`.
-You can override this default on your module config as: 
+### storage
+Specify which storage you want to use to store user token and profile. There are only two option here, either `localStorage` or `sessionStorage` and default to `localStorage`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -395,7 +405,8 @@ angular
 });
 ```
 
-- **authHeader** Http `Authorization` header. Default to `Authorization`. You can override this default on your module config as: 
+### authHeader
+Http `Authorization` header to be set-ed into request header before sent to the backend. Its the one that will carry authenticity `token` and your can check it in your backend logic. Default to `Authorization`. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
