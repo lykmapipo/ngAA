@@ -43,7 +43,7 @@
                         $scope.signinError = message;
 
                         //broadcast error message
-                        $rootScope.$broadcast('signinError', error.message);
+                        $rootScope.$broadcast('signinError', message);
                     });
             };
 
