@@ -82,6 +82,12 @@ describe('ngAA:Provider:$authProvider', function() {
         expect(authProvider.signinState).to.equal('auth.signin');
     });
 
+    it('should be able set application signinTemplateUrl', function() {
+        authProvider.signinTemplateUrl = 'views/auth/signin.html';
+        expect(Config.signinTemplateUrl).to.equal('views/auth/signin.html');
+        expect(authProvider.signinTemplateUrl).to.equal('views/auth/signin.html');
+    });
+
     it('should be able set authorization tokenPrefix', function() {
         authProvider.tokenPrefix = '_t_';
         expect(Config.tokenPrefix).to.equal('_t_');
