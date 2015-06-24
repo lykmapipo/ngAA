@@ -4,7 +4,7 @@
     /**
      * @ngdoc function
      * @name ngAAAuthCtrl
-     * @description user authentication controller
+     * @description default user authentication controller
      */
     angular
         .module('ngAA')
@@ -36,6 +36,13 @@
                         $state.go(ngAAConfig.afterSigninRedirectTo);
                     })
                     .catch(function(error) {
+                        var message = error.message;
+
+                        //add signin errors in scope
+                        //to allow rendering feedback to user
+                        $scope.signinError = message;
+
+                        //broadcast error message
                         $rootScope.$broadcast('signinError', error.message);
                     });
             };
