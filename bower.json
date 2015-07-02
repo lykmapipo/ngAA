@@ -1,6 +1,6 @@
 {
     "name": "ngAA",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "DRY authentication and authorization for angular and ui-router",
     "homepage": "https://github.com/lykmapipo/ngAA",
     "main": [

@@ -1,6 +1,6 @@
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.1.1 - Tue Feb 24 2015 02:06:32
+ * @version v0.1.3 - Thu Jul 02 2015 16:02:57
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -203,7 +203,7 @@
                 };
 
                 $auth.signout = function() {
-                    return ngAAUser.logout();
+                    return ngAAUser.signout();
                 };
 
                 $auth.isAuthenticated = function() {
@@ -935,7 +935,7 @@
     /**
      * @ngdoc function
      * @name ngAAAuthCtrl
-     * @description user authentication controller
+     * @description default user authentication controller
      */
     angular
         .module('ngAA')
@@ -967,7 +967,14 @@
                         $state.go(ngAAConfig.afterSigninRedirectTo);
                     })
                     .catch(function(error) {
-                        $rootScope.$broadcast('signinError', error.message);
+                        var message = error.message;
+
+                        //add signin errors in scope
+                        //to allow rendering feedback to user
+                        $scope.signinError = message;
+
+                        //broadcast error message
+                        $rootScope.$broadcast('signinError', message);
                     });
             };
 
