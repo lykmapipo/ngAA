@@ -41,7 +41,7 @@
                 };
 
                 $auth.signout = function() {
-                    return ngAAUser.logout();
+                    return ngAAUser.signout();
                 };
 
                 $auth.isAuthenticated = function() {

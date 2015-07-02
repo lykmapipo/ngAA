@@ -7,6 +7,8 @@ describe('ngAA:Provider:$authProvider', function() {
     var Config;
     var claim;
     var token;
+    var $user;
+    var $token;
 
     //user profile
     var user = {
@@ -34,6 +36,12 @@ describe('ngAA:Provider:$authProvider', function() {
     beforeEach(inject(function(ngAAConfig, $httpBackend) {
         Config = ngAAConfig;
         httpBackend = $httpBackend;
+    }));
+
+    // inject ngAA User
+    beforeEach(inject(function(ngAAToken, ngAAUser) {
+        $user = ngAAUser;
+        $token = ngAAToken;
     }));
 
     //create a jwt claim
@@ -155,7 +163,41 @@ describe('ngAA:Provider:$authProvider', function() {
     }));
 
 
-    it('should not allow an authenticated and un permitted user to go to restricted state', inject(function($rootScope, $state) {
+    it('should be able to signout current user', inject(function($rootScope, $state, $auth) {
+        authProvider.profileKey = 'profile';
+        authProvider.tokenName = 'token';
+        authProvider.afterSignoutRedirectTo = 'signin-t';
+
+        //define after 
+        //signout 
+        //redirect state
+        stateProvider
+            .state('signin-t', {
+                template: '<h1>signin</h1>',
+            });
+
+        var response = {
+            data: {
+                'token': token,
+                'profile': user
+            }
+        };
+
+        //set profile and token
+        $token.setToken(response);
+        $user.setProfile(response);
+
+        //invoke signout
+        $auth.signout();
+
+        $rootScope.$apply();
+
+        expect($user.isAuthenticatedSync()).to.be.false;
+
+    }));
+
+
+    it('should not allow non authenticated and un permitted user to go to restricted state', inject(function($rootScope, $state) {
         authProvider.profileKey = 'user';
         authProvider.tokenName = 'token';
         authProvider.signinState = 'signin-t';
