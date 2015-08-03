@@ -37,6 +37,10 @@
         "type": "git",
         "url": "https://github.com/lykmapipo/ngAA.git"
     },
+    "bugs": {
+        "url": "https://github.com/lykmapipo/ngAA/issues"
+    },
+    "license": "MIT",
     "engines": {
         "node": ">=0.10.0"
     }
