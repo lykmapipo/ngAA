@@ -514,7 +514,7 @@ angular
 * Clone this repository
 * Install all development dependencies
 ```sh
-$ npm install && bower install
+$ npm install --dev && bower install
 ```
 * Then run test
 ```sh
