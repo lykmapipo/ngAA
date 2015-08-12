@@ -113,7 +113,7 @@ angular
 });
 ```
 
-- Define your application states and include `permits` defititions to restrict access.
+- Define your application states and include `permits` definitions to restrict access.
 ```js
 $stateProvider
     .state('main', {
@@ -302,7 +302,7 @@ $auth
 ```
 
 ### $auth.getProfile
-Used to get current uer profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
+Used to get current user profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
 ```js
 $stateProvider
     .state('contact', {
@@ -368,7 +368,7 @@ $auth
 ```
 
 ## Directives
-`ngAA` provide a `signout` directive which you can use it in your templates to signout the curent singin user
+`ngAA` provide a `signout` directive which you can use it in your templates to signout the current sign-in user
 ```html
 <li ng-show="isAuthenticated">
     <a href="" data-signout>Signout</a>
@@ -451,7 +451,7 @@ angular
 ```
 
 ### tokenPrefix 
-A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. You can override this default on your module config as: 
+A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use another prefix mostly your application name. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
