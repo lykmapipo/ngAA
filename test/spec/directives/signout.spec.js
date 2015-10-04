@@ -34,7 +34,7 @@ describe('ngAA:Directive:signout', function() {
 
     beforeEach(inject(function($rootScope, $compile) {
 
-        //bind signout directtive to
+        //bind signout directive to
         //to element
         elm = angular
             .element(
