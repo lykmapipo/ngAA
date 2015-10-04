@@ -2,10 +2,6 @@ ngAA
 =======
 [![Build Status](https://travis-ci.org/lykmapipo/ngAA.svg?branch=master)](https://travis-ci.org/lykmapipo/ngAA)
 
-[![Tips](https://img.shields.io/gratipay/lykmapipo.svg)](https://gratipay.com/lykmapipo/)
-
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/lykmapipo/)
-
 DRY authentication and authorization for angular and ui-router.
 It uses [json web tokens](http://jwt.io/) and http authorization header for it authentication workflow and restrict state access by [permits](https://github.com/lykmapipo/ngAA#permits).
 
