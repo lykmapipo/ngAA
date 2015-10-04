@@ -3,45 +3,49 @@ ngAA
 [![Build Status](https://travis-ci.org/lykmapipo/ngAA.svg?branch=master)](https://travis-ci.org/lykmapipo/ngAA)
 
 DRY authentication and authorization for angular and ui-router.
-It uses [json web tokens](http://jwt.io/) and http authorization header for it authentication workflow and restrict state access by [permits](https://github.com/lykmapipo/ngAA#permits).
+It uses [json web tokens](http://jwt.io/) and http authorization header for it authentication workflow and restrict state access by [permits](#permits).
 
 *Note: ngAA works only with [ui-router](https://github.com/angular-ui/ui-router)*
 
-[Demo](https://github.com/lykmapipo/ngAA#demo)
+[Demo](#demo)
 
 ## Guide
 
-* [Install](https://github.com/lykmapipo/ngAA#install)
-* [Usage](https://github.com/lykmapipo/ngAA#usage)
-* [Permits](https://github.com/lykmapipo/ngAA#permits)
-    * [`withOnly`](https://github.com/lykmapipo/ngAA#withonly) 
-    * [`withAll`](https://github.com/lykmapipo/ngAA#withall) 
-    * [`withAny`](https://github.com/lykmapipo/ngAA#withany) 
-* [$auth API](https://github.com/lykmapipo/ngAA#auth-api)
-  * [`$auth.signout`](https://github.com/lykmapipo/ngAA#authsignout)
-  * [`$auth.isAuthenticated`](https://github.com/lykmapipo/ngAA#authisauthenticated)
-  * [`$auth.isAuthenticatedSync`](https://github.com/lykmapipo/ngAA#authisauthenticated)
-  * [`$auth.getClaim`](https://github.com/lykmapipo/ngAA#authgetclaim)
-  * [`$auth.getProfile`](https://github.com/lykmapipo/ngAA#authgetprofile)
-  * [`$auth.hasPermission`](https://github.com/lykmapipo/ngAA#authhaspermission)
-  * [`$auth.hasPermissions`](https://github.com/lykmapipo/ngAA#authhaspermissions)
-  * [`$auth.hasAnyPermission`](https://github.com/lykmapipo/ngAA#authhasanypermission)
-* [Directives](https://github.com/lykmapipo/ngAA#directives)
-* [Configurations](https://github.com/lykmapipo/ngAA#configuration)
-    * [`afterSigninRedirectTo`](https://github.com/lykmapipo/ngAA#aftersigninredirectto) 
-    * [`afterSignoutRedirectTo`](https://github.com/lykmapipo/ngAA#aftersignoutredirectto) 
-    * [`signinUrl`](https://github.com/lykmapipo/ngAA#signinurl) 
-    * [`signinState`](https://github.com/lykmapipo/ngAA#signinstate) 
-    * [`signinRoute`](https://github.com/lykmapipo/ngAA#signinroute) 
-    * [`signinTemplateUrl`](https://github.com/lykmapipo/ngAA#signintemplateurl) 
-    * [`tokenPrefix`](https://github.com/lykmapipo/ngAA#tokenprefix) 
-    * [`tokenName`](https://github.com/lykmapipo/ngAA#tokenname) 
-    * [`profileKey`](https://github.com/lykmapipo/ngAA#profilekey) 
-    * [`storage`](https://github.com/lykmapipo/ngAA#storage) 
-    * [`authHeader`](https://github.com/lykmapipo/ngAA#authheader)
-* [Testing](https://github.com/lykmapipo/ngAA#testing)
-* [Development](https://github.com/lykmapipo/ngAA#development)
-* [Contribute](https://github.com/lykmapipo/ngAA#contribute)
+* [Install](#install)
+* [Usage](#usage)
+* [Permits](#permits)
+    * [`withOnly`](#withonly) 
+    * [`withAll`](#withall) 
+    * [`withAny`](#withany) 
+* [$auth API](#auth-api)
+  * [`$auth.signout`](#authsignout)
+  * [`$auth.isAuthenticated`](#authisauthenticated)
+  * [`$auth.isAuthenticatedSync`](#authisauthenticated)
+  * [`$auth.getClaim`](#authgetclaim)
+  * [`$auth.getProfile`](#authgetprofile)
+  * [`$auth.hasPermission`](#authhaspermission)
+  * [`$auth.hasPermissions`](#authhaspermissions)
+  * [`$auth.hasAnyPermission`](#authhasanypermission)
+* [Directives](#directives)
+    * [`signout`](#signout) 
+    * [`show-if-has-permit`](#show-if-has-permit) 
+    * [`show-if-has-permits`](https://github.com/lykmapipo#show-if-has-permits) 
+    * [`show-if-has-any-permit`](#show-if-has-any-permit) 
+* [Configurations](#configuration)
+    * [`afterSigninRedirectTo`](#aftersigninredirectto) 
+    * [`afterSignoutRedirectTo`](#aftersignoutredirectto) 
+    * [`signinUrl`](#signinurl) 
+    * [`signinState`](#signinstate) 
+    * [`signinRoute`](#signinroute) 
+    * [`signinTemplateUrl`](#signintemplateurl) 
+    * [`tokenPrefix`](#tokenprefix) 
+    * [`tokenName`](#tokenname) 
+    * [`profileKey`](#profilekey) 
+    * [`storage`](#storage) 
+    * [`authHeader`](#authheader)
+* [Testing](#testing)
+* [Development](#development)
+* [Contribute](#contribute)
 
 
 
@@ -109,7 +113,7 @@ angular
 });
 ```
 
-- Define your application states and include `permits` defititions to restrict access.
+- Define your application states and include `permits` definitions to restrict access.
 ```js
 $stateProvider
     .state('main', {
@@ -298,7 +302,7 @@ $auth
 ```
 
 ### $auth.getProfile
-Used to get current uer profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
+Used to get current user profile. Its highly recommended to use `getProfile` in your state resolve properties to get the current user profile.
 ```js
 $stateProvider
     .state('contact', {
@@ -364,10 +368,36 @@ $auth
 ```
 
 ## Directives
-`ngAA` provide a `signout` directive which you can use it in your templates to signout the curent singin user
+
+### signout
+`ngAA` provide a `signout` directive which can be used in templates to signout the current sign-in user
 ```html
 <li ng-show="isAuthenticated">
-    <a href="" data-signout>Signout</a>
+    <a data-signout>Signout</a>
+</li>
+```
+
+### show-if-has-permit
+`ngAA` provide a `show-if-has-permit` directive which can be used in templates to show or hide HTML elements when current signed in user has a given permission.
+```html
+<li show-if-has-any-permit="Post:delete">
+    ...
+</li>
+```
+
+### show-if-has-permits
+`ngAA` provide a `show-if-has-permits` directive which can be used in templates to show or hide HTML elements when current signed in user has all of the provided permissions.
+```html
+<li show-if-has-permits="Post:view, Comment:create">
+    ...
+</li>
+```
+
+### show-if-has-any-permit
+`ngAA` provide a `show-if-has-any-permit` directive which can be used in templates to show or hide HTML elements when current signed in user has any of the provided permissions.
+```html
+<li show-if-has-any-permits="Post:view, Comment:create">
+    ...
 </li>
 ```
 
@@ -442,12 +472,12 @@ angular
 'ngAA'
 ])
 .config(function($stateProvider, $urlRouterProvider, $authProvider) {
-        $authProvider.templateUrl = 'views/auth/signin.html';
+        $authProvider.signinTemplateUrl = 'views/auth/signin.html';
 });
 ```
 
 ### tokenPrefix 
-A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use onother prefix mostly your application name. You can override this default on your module config as: 
+A prefix to be used to prefix token and user profile in storage. Default to `ngAA`. Its highly advisable to use another prefix mostly your application name. You can override this default on your module config as: 
 ```js
 angular
 .module('yourApp',[
@@ -510,7 +540,7 @@ angular
 * Clone this repository
 * Install all development dependencies
 ```sh
-$ npm install --dev && bower install
+$ npm install && bower install
 ```
 * Then run test
 ```sh
@@ -522,6 +552,7 @@ $ npm test
 ```sh
 $ grunt serve
 ```
+then supply any `email` and `password`
 
 ## Development
 `ngAA` has set of useful `grunt` tasks to help you with development. By running

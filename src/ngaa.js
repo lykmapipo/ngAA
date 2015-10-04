@@ -1,6 +1,8 @@
 (function() {
     'use strict';
 
+    var $stateProviderRef = null;
+
     /**
      * @ngdoc module
      * @name ngAA
@@ -21,14 +23,7 @@
             'ui.router'
         ])
         .config(function($httpProvider, $stateProvider, jwtInterceptorProvider, ngAAConfig) {
-            //configure ngAA states
-            $stateProvider
-                .state(ngAAConfig.signinState, {
-                    url: ngAAConfig.signinRoute,
-                    templateUrl: ngAAConfig.signinTemplateUrl,
-                    controller: 'ngAAAuthCtrl'
-                });
-
+            $stateProviderRef = $stateProvider;
 
             //configure jwtInterceptorProvider
             jwtInterceptorProvider.authHeader = ngAAConfig.authHeader;
@@ -59,6 +54,16 @@
             $httpProvider.interceptors.push('jwtInterceptor');
         })
         .run(function($rootScope, $state, ngAAConfig, $auth) {
+            
+            //configure ngAA states
+            $stateProviderRef
+                .state(ngAAConfig.signinState, {
+                    url: ngAAConfig.signinRoute,
+                    templateUrl: ngAAConfig.signinTemplateUrl,
+                    controller: 'ngAAAuthCtrl'
+                });
+                
+
             //check for permits during state change
             $rootScope
                 .$on('$stateChangeStart', $auth._onStateChange);

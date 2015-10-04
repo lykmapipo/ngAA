@@ -5,7 +5,7 @@
      * @ngdoc constant
      * @name ngAAConfig
      * @description provide default configuration of ngAA. These can be
-     *              ovverrided using `$authProvider` when configuring
+     *              overrided using `$authProvider` when configuring
      *              the utilizing module
      */
     angular

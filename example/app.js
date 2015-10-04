@@ -1,4 +1,5 @@
 'use strict';
+
 angular
     .module('ngAPP', [
         'ui.router',
@@ -6,8 +7,10 @@ angular
         'ngFaker'
     ])
     .config(function($stateProvider, $urlRouterProvider, $authProvider) {
+        $authProvider.signinTemplateUrl = 'views/auth/signin.html';
         $authProvider.afterSigninRedirectTo = 'contact';
         $authProvider.afterSignoutRedirectTo = 'main';
+
         //unmatched route handler
         $urlRouterProvider.otherwise('/');
 

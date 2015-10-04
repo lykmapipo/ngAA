@@ -1,6 +1,6 @@
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.1.3 - Thu Jul 02 2015 16:02:57
+ * @version v0.2.0 - Mon Oct 05 2015 01:52:59
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -8,6 +8,8 @@
 
 (function() {
     'use strict';
+
+    var $stateProviderRef = null;
 
     /**
      * @ngdoc module
@@ -29,14 +31,7 @@
             'ui.router'
         ])
         .config(['$httpProvider', '$stateProvider', 'jwtInterceptorProvider', 'ngAAConfig', function($httpProvider, $stateProvider, jwtInterceptorProvider, ngAAConfig) {
-            //configure ngAA states
-            $stateProvider
-                .state(ngAAConfig.signinState, {
-                    url: ngAAConfig.signinRoute,
-                    templateUrl: ngAAConfig.signinTemplateUrl,
-                    controller: 'ngAAAuthCtrl'
-                });
-
+            $stateProviderRef = $stateProvider;
 
             //configure jwtInterceptorProvider
             jwtInterceptorProvider.authHeader = ngAAConfig.authHeader;
@@ -67,6 +62,16 @@
             $httpProvider.interceptors.push('jwtInterceptor');
         }])
         .run(['$rootScope', '$state', 'ngAAConfig', '$auth', function($rootScope, $state, ngAAConfig, $auth) {
+            
+            //configure ngAA states
+            $stateProviderRef
+                .state(ngAAConfig.signinState, {
+                    url: ngAAConfig.signinRoute,
+                    templateUrl: ngAAConfig.signinTemplateUrl,
+                    controller: 'ngAAAuthCtrl'
+                });
+                
+
             //check for permits during state change
             $rootScope
                 .$on('$stateChangeStart', $auth._onStateChange);
@@ -99,7 +104,7 @@
      * @ngdoc constant
      * @name ngAAConfig
      * @description provide default configuration of ngAA. These can be
-     *              ovverrided using `$authProvider` when configuring
+     *              overrided using `$authProvider` when configuring
      *              the utilizing module
      */
     angular
@@ -858,6 +863,156 @@
 
             return $utils;
         });
+
+}());
+
+(function() {
+    'use strict';
+
+    //borrowed from 
+    //https://github.com/angular/angular.js/blob/master/src/ng/directive/ngShowHide.js
+    var NG_HIDE_CLASS = 'ng-hide';
+    var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
+
+    //add or remove ng-hide class on element
+    //borrowed from 
+    //https://github.com/angular/angular.js/blob/master/src/ng/directive/ngShowHide.js
+    function animate($animate, element, value) {
+        $animate[value ? 'removeClass' : 'addClass'](element, NG_HIDE_CLASS, {
+            tempClasses: NG_HIDE_IN_PROGRESS_CLASS
+        });
+    }
+
+    //parse comma separated string into
+    //array of permissions
+    function parsePermissions(values) {
+        if (values) {
+            return values.split(',').map(function(permission) {
+                return permission.trim();
+            });
+        } else {
+            return [];
+        }
+    }
+
+
+    /**
+     * @ngdoc directive
+     * @name showIfHasPermit
+     * @description shows the given HTML element if current
+     *              signed in user has a given permission, otherwise the
+     *              element is hidden
+     *
+     * @example
+     *         <li show-if-has-permit="User:edit">
+     *              <a href="">Edit</a>
+     *          </li>
+     */
+    angular
+        .module('ngAA')
+        .directive('showIfHasPermit', ['$animate', 'ngAAUser', function($animate, ngAAUser) {
+
+            return {
+                restrict: 'A',
+                multiElement: true,
+                link: function(scope, element, attr) {
+                    //check if current signed in user
+                    //has the provided permission
+                    ngAAUser
+                        .hasPermission(attr.showIfHasPermit)
+                        .then(function(hasPermission) {
+                            animate($animate, element, hasPermission);
+                        })
+                        .catch(function( /*error*/ ) {
+                            animate($animate, element, false);
+                        });
+
+                }
+            };
+
+        }]);
+
+
+    /**
+     * @ngdoc directive
+     * @name showIfHasAllPermits
+     * @description shows the given HTML element if current
+     *              signed in user has all given permissions, otherwise the
+     *              element is hidden
+     *
+     * @example
+     *         <li show-if-has-permits="User:view, User:create">
+     *              <a href="">Create</a>
+     *         </li>
+     */
+    angular
+        .module('ngAA')
+        .directive('showIfHasPermits', ['$animate', 'ngAAUser', function($animate, ngAAUser) {
+
+            return {
+                restrict: 'A',
+                multiElement: true,
+                link: function(scope, element, attr) {
+                    //prepare permissions to check
+                    var permissions =
+                        parsePermissions(attr.showIfHasPermits);
+
+                    //check if current signed in user
+                    //has all of the provided permission
+                    ngAAUser
+                        .hasPermissions(permissions)
+                        .then(function(hasPermissions) {
+                            animate($animate, element, hasPermissions);
+                        })
+                        .catch(function( /*error*/ ) {
+                            animate($animate, element, false);
+                        });
+
+                }
+            };
+
+        }]);
+
+
+    /**
+     * @ngdoc directive
+     * @name showIfHasAnyPermit
+     * @description shows the given HTML element if current
+     *              signed in user has any of the given permissions,
+     *              otherwise the element is hidden
+     *
+     * @example
+     *         <li show-if-has-any-permit="User:view, User:create">
+     *              <a href="">View</a>
+     *         </li>
+     */
+    angular
+        .module('ngAA')
+        .directive('showIfHasAnyPermit', ['$animate', 'ngAAUser', function($animate, ngAAUser) {
+
+            return {
+                restrict: 'A',
+                multiElement: true,
+                link: function(scope, element, attr) {
+                    //prepare permissions to check
+                    var permissions =
+                        parsePermissions(attr.showIfHasAnyPermit);
+
+                    //check if current signed in user
+                    //has any of the provided permission
+                    ngAAUser
+                        .hasAnyPermission(permissions)
+                        .then(function(hasAnyPermission) {
+                            animate($animate, element, hasAnyPermission);
+                        })
+                        .catch(function( /*error*/ ) {
+                            animate($animate, element, false);
+                        });
+
+                }
+            };
+
+        }]);
 
 }());
 
