@@ -526,6 +526,7 @@ $ npm test
 ```sh
 $ grunt serve
 ```
+then supply any `email` and `password`
 
 ## Development
 `ngAA` has set of useful `grunt` tasks to help you with development. By running
