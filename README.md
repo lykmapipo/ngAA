@@ -31,6 +31,10 @@ It uses [json web tokens](http://jwt.io/) and http authorization header for it a
   * [`$auth.hasPermissions`](https://github.com/lykmapipo/ngAA#authhaspermissions)
   * [`$auth.hasAnyPermission`](https://github.com/lykmapipo/ngAA#authhasanypermission)
 * [Directives](https://github.com/lykmapipo/ngAA#directives)
+    * [`signout`](https://github.com/lykmapipo/ngAA#signout) 
+    * [`show-if-has-permit`](https://github.com/lykmapipo/ngAA#signout) 
+    * [`show-if-has-permits`](https://github.com/lykmapipo/ngAA#signout) 
+    * [`show-if-has-any-permit`](https://github.com/lykmapipo/ngAA#signout) 
 * [Configurations](https://github.com/lykmapipo/ngAA#configuration)
     * [`afterSigninRedirectTo`](https://github.com/lykmapipo/ngAA#aftersigninredirectto) 
     * [`afterSignoutRedirectTo`](https://github.com/lykmapipo/ngAA#aftersignoutredirectto) 
@@ -368,10 +372,36 @@ $auth
 ```
 
 ## Directives
-`ngAA` provide a `signout` directive which you can use it in your templates to signout the current sign-in user
+
+### signout
+`ngAA` provide a `signout` directive which can be used in templates to signout the current sign-in user
 ```html
 <li ng-show="isAuthenticated">
-    <a href="" data-signout>Signout</a>
+    <a data-signout>Signout</a>
+</li>
+```
+
+### show-if-has-permit
+`ngAA` provide a `show-if-has-permit` directive which can be used in templates to show or hide HTML elements when current signed in user has a given permission.
+```html
+<li show-if-has-any-permit="Post:delete">
+    ...
+</li>
+```
+
+### show-if-has-permits
+`ngAA` provide a `show-if-has-permits` directive which can be used in templates to show or hide HTML elements when current signed in user has all of the provided permissions.
+```html
+<li show-if-has-permits="Post:view, Comment:create">
+    ...
+</li>
+```
+
+### show-if-has-any-permit
+`ngAA` provide a `show-if-has-any-permit` directive which can be used in templates to show or hide HTML elements when current signed in user has any of the provided permissions.
+```html
+<li show-if-has-any-permits="Post:view, Comment:create">
+    ...
 </li>
 ```
 
