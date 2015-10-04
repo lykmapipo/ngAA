@@ -446,7 +446,7 @@ angular
 'ngAA'
 ])
 .config(function($stateProvider, $urlRouterProvider, $authProvider) {
-        $authProvider.templateUrl = 'views/auth/signin.html';
+        $authProvider.signinTemplateUrl = 'views/auth/signin.html';
 });
 ```
 
