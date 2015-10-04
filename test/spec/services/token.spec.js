@@ -39,6 +39,7 @@ describe('ngAA:Service:Token', function() {
         authProvider.tokenName = 'token';
         authProvider.profileKey = 'profile';
 
+
         expect($token.getProfileStorageKey()).to.equal('_r__token_profile');
     });
 
