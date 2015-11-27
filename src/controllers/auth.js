@@ -36,14 +36,12 @@
                         $state.go(ngAAConfig.afterSigninRedirectTo);
                     })
                     .catch(function(error) {
-                        var message = error.message;
-
                         //add signin errors in scope
                         //to allow rendering feedback to user
-                        $scope.signinError = message;
+                        $scope.signinError = error;
 
                         //broadcast error message
-                        $rootScope.$broadcast('signinError', message);
+                        $rootScope.$broadcast('signinError', error);
                     });
             };
 

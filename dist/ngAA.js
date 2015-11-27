@@ -1,6 +1,6 @@
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.2.0 - Mon Oct 05 2015 02:14:25
+ * @version v0.2.0 - Fri Nov 27 2015 11:30:56
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -1122,14 +1122,12 @@
                         $state.go(ngAAConfig.afterSigninRedirectTo);
                     })
                     .catch(function(error) {
-                        var message = error.message;
-
                         //add signin errors in scope
                         //to allow rendering feedback to user
-                        $scope.signinError = message;
+                        $scope.signinError = error;
 
                         //broadcast error message
-                        $rootScope.$broadcast('signinError', message);
+                        $rootScope.$broadcast('signinError', error);
                     });
             };
 
