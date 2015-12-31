@@ -163,6 +163,53 @@ describe('ngAA:Provider:$authProvider', function() {
     }));
 
 
+    it('should be able to go to `toState` if user is authenticated only and no permits required', inject(function($rootScope, $state, $auth) {
+        authProvider.profileKey = 'user';
+        authProvider.tokenName = 'token';
+
+        stateProvider
+            .state('board', {
+                url: '/board',
+                template: '<h1>CDashboard</h1>',
+                data: {
+                    authenticated: true
+                }
+            });
+
+        httpBackend
+            .whenPOST(authProvider.signinUrl)
+            .respond(function( /*method, url, data, headers*/ ) {
+                return [200, {
+                    token: token,
+                    user: user
+                }, {}];
+            });
+
+        var isPermitted = false;
+        $rootScope
+            .$on('authenticationAccepted', function( /*event, toState, toParams*/ ) {
+                isPermitted = true;
+            });
+
+        var isSignin = false;
+        $auth
+            .signin(user)
+            .then(function() {
+                isSignin = true;
+
+                //navigate to state with permits
+                $state.go('board');
+            });
+
+        httpBackend.flush();
+        $rootScope.$apply();
+
+        expect($state.current.name).to.equal('board');
+        expect(isPermitted).to.be.true;
+        expect(isSignin).to.be.true;
+    }));
+
+
     it('should be able to signout current user', inject(function($rootScope, $state, $auth) {
         authProvider.profileKey = 'profile';
         authProvider.tokenName = 'token';
@@ -233,4 +280,40 @@ describe('ngAA:Provider:$authProvider', function() {
         expect($state.current.name).to.equal('signin-t');
         expect(isPermitted).to.be.false;
     }));
+
+    it('should not allow non authenticated user to go to restricted state', inject(function($rootScope, $state) {
+        authProvider.profileKey = 'user';
+        authProvider.tokenName = 'token';
+        authProvider.signinState = 'signin-ti';
+
+        stateProvider
+            .state('signin-ti', {
+                template: '<h1>Signin</h1>',
+            });
+
+        stateProvider
+            .state('contacti', {
+                url: '/contacti',
+                template: '<h1>Contact</h1>',
+                data: {
+                    authenticated: true
+                }
+            });
+
+
+        var isPermitted = true;
+        $rootScope
+            .$on('authenticationDenied', function( /*event, toState, toParams*/ ) {
+                isPermitted = false;
+            });
+
+        //navigate to state with permits
+        $state.go('contacti');
+
+        $rootScope.$apply();
+
+        expect($state.current.name).to.equal('signin-ti');
+        expect(isPermitted).to.be.false;
+    }));
+
 });

@@ -73,10 +73,16 @@
                     return ngAAUser.hasAnyPermission(checkPermissions);
                 };
 
+                //TODO refactor
                 $auth._onStateChange = function(event, toState, toParams, fromState, fromParams) {
                     // If there are permits defined in toState 
                     // then prevent default and attempt to authorize
                     var permits = ngAAUtils.getStatePermits(toState);
+
+                    //grab authenticated data from state
+                    var shouldCheckAuthenticity =
+                        toState.data ? toState.data.authenticated : undefined;
+
 
                     //if there are permits
                     //defined and state is not signinState
@@ -87,7 +93,63 @@
                         permits &&
                         toState.name !== ngAAConfig.signinState;
 
-                    if (shouldCheckPermits) {
+                    //check for authenticity only
+                    if (shouldCheckAuthenticity && !shouldCheckPermits) {
+                        //prevent default state transition
+                        event.preventDefault();
+
+                        //check if user is authenticated
+                        //and has permission
+                        ngAAUser.isAuthenticated().then(function(isAuthenticated) {
+                            //if not authenticated
+                            //throw exception
+                            if (!isAuthenticated) {
+                                //broadcast the error
+                                $rootScope
+                                    .$broadcast(
+                                        'authenticationDenied',
+                                        'Not authenticated'
+                                    );
+
+                                //and redirect user to signin state
+                                $state.go(ngAAConfig.signinState);
+                            }
+                            //user is authenticated
+                            //continue to next state
+                            else {
+                                // If authenticated, use call state.go without triggering the event.
+                                // Then trigger $stateChangeSuccess manually to resume the rest of the process
+                                // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
+                                $rootScope
+                                    .$broadcast(
+                                        'authenticationAccepted',
+                                        toState,
+                                        toParams
+                                    );
+
+                                $state
+                                    .go(
+                                        toState.name,
+                                        toParams, {
+                                            notify: false
+                                        })
+                                    .then(function() {
+                                        $rootScope
+                                            .$broadcast(
+                                                '$stateChangeSuccess',
+                                                toState,
+                                                toParams,
+                                                fromState,
+                                                fromParams
+                                            );
+                                    });
+                            }
+
+                        });
+                    }
+
+                    //check for authenticity and permits
+                    else if (shouldCheckPermits) {
                         //prevent default state transition
                         event.preventDefault();
 
@@ -167,6 +229,7 @@
                             });
                     }
                     //no permits defined
+                    //and do not check authenticity
                     //continue with normal state change
                     else {
                         return;
