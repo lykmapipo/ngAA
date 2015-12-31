@@ -13,6 +13,7 @@ It uses [json web tokens](http://jwt.io/) and http authorization header for it a
 
 * [Install](#install)
 * [Usage](#usage)
+* [Authentication](#authentication)
 * [Permits](#permits)
     * [`withOnly`](#withonly) 
     * [`withAll`](#withall) 
@@ -113,20 +114,23 @@ angular
 });
 ```
 
-- Define your application states and include `permits` definitions to restrict access.
+- Define your application states and include `permits` or `authenticated` definitions to restrict access.
 ```js
 $stateProvider
     .state('main', {
         url: '/',
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        data:{
+            authenticated:true //check for authenticity only
+        }
     })
     .state('about', {
         url: '/about',
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl',
         data: {
-            permits: {
+            permits: { //check for authenticity and permissions
                 withOnly: 'Post:delete'
             }
         }
@@ -136,7 +140,7 @@ $stateProvider
         templateUrl: 'views/contact.html',
         controller: 'ContactCtrl',
         data: {
-            permits: {
+            permits: { //check for authenticity and permissions
                 withAll: ['Post:create','Post:edit']
             }
         },
@@ -165,6 +169,30 @@ In return it expect the following response format
         permissions:[...]
     }
 }
+```
+
+## Authentication
+`ngAA` can restrict state transition to only authenticated user using `authenticated:true` state data. To ensure authenticity on state define it as below:
+
+```js
+'use strict';
+angular
+    .module('ngAPP', [
+        'ui.router',
+        'ngAA'
+    ])
+    .config(function($stateProvider, $urlRouterProvider, $authProvider) {
+        $stateProvider
+            .state('about', {
+                url: '/about',
+                templateUrl: 'views/about.html',
+                controller: 'AboutCtrl',
+                data: {
+                    authenticated:true
+                }
+            });
+            ...
+    });
 ```
 
 ## Permits
