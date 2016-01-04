@@ -8,7 +8,24 @@
         "name": "lykmapipo",
         "github": "https://github.com/lykmapipo"
     }],
-    "dependencies": {},
+    "keywords": [
+        "angular",
+        "authentication",
+        "authorization",
+        "user",
+        "subject",
+        "jwt",
+        "token",
+        "signin",
+        "signout",
+        "permission"
+    ],
+    "dependencies": {
+        "angular": "^1.4.8",
+        "angular-jwt": "0.0.9",
+        "angular-ui-router": "^0.2.15",
+        "ngstorage": "^0.3.10"
+    },
     "devDependencies": {
         "chai": "^1.10.0",
         "grunt": "^0.4.5",
@@ -20,6 +37,7 @@
         "grunt-karma": "^0.10.1",
         "grunt-newer": "^1.1.0",
         "grunt-ng-annotate": "^0.9.2",
+        "grunt-umd": "^2.3.5",
         "jshint-stylish": "^1.0.0",
         "karma": "^0.12.31",
         "karma-chai": "^0.1.0",
