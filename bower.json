@@ -4,7 +4,7 @@
     "description": "DRY authentication and authorization for angular and ui-router",
     "homepage": "https://github.com/lykmapipo/ngAA",
     "main": [
-        "dist/ngAA.js"
+        "dist/ng-aa.js"
     ],
     "authors": [
         "lykmapipo <lallyelias87@gmail.com>"
