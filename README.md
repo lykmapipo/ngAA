@@ -62,7 +62,8 @@ $ npm install --save ngAA
 ```
 
 ## Usage
-- Include `ngAA` into your app index.html 
+- Include `ngAA` into your app index.html or `require('ngAA')` it in your application
+
 ```html
 <!doctype html>
 <html ng-app="yourApp">
