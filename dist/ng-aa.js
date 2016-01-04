@@ -1,6 +1,22 @@
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module unless amdModuleId is set
+    define(["angular"], function (a0) {
+      return (factory(a0));
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory(require("angular"),require("angular-jwt"),require("angular-ui-router"),require("ngstorage"));
+  } else {
+    factory(angular);
+  }
+}(this, function (angular) {
+
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.2.4 - Mon Jan 04 2016 13:08:44
+ * @version v0.2.4 - Mon Jan 04 2016 13:24:32
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -1196,3 +1212,5 @@
 
         }]);
 }());
+
+}));

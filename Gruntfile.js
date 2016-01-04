@@ -184,8 +184,8 @@ module.exports = function(grunt) {
             umd: {
                 dist: {
                     options: {
-                        src: '<%= props.dist%>/ngAA.js',
-                        dest: '<%= props.dist%>/ngAA.js',
+                        src: '<%= props.dist%>/<%= pkg.name %>.js',
+                        dest: '<%= props.dist%>/<%= pkg.name %>.js',
                         // objectToExport: 'ngAA', // optional, internal object that will be exported
                         // amdModuleId: 'ngAA', // optional, if missing the AMD module will be anonymous
                         // globalAlias: 'ngAA', // optional, changes the name of the global variable
@@ -197,8 +197,7 @@ module.exports = function(grunt) {
                                 'angular-jwt',
                                 'angular-ui-router',
                                 'ngstorage'
-                            ],
-                            global: ['angular']
+                            ]
                         }
                     }
                 }
