@@ -26,9 +26,7 @@ angular
                 templateUrl: 'views/about.html',
                 controller: 'AboutCtrl',
                 data: {
-                    permits: {
-                        withOnly: 'Post:delete'
-                    }
+                    authenticated: true
                 }
             })
             .state('contact', {

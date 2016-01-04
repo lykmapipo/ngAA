@@ -49,11 +49,18 @@ It uses [json web tokens](http://jwt.io/) and http authorization header for it a
 * [Contribute](#contribute)
 
 
+## Installation
 
-## Install
+### Bower Installation
 ```sh
-$ bower install --save ng-aa
+$ bower install --save ngAA
 ```
+
+### npm Installation
+```sh
+$ npm install --save ngAA
+```
+
 ## Usage
 - Include `ngAA` into your app index.html 
 ```html
@@ -71,7 +78,7 @@ $ bower install --save ng-aa
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
     <script src="bower_components/ngstorage/ngStorage.js"></script>
-    <script src="bower_components/ng-aa/dist/ngAA.js"></script>
+    <script src="bower_components/ngAA/dist/ngAA.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
