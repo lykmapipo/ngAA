@@ -16,7 +16,7 @@
 
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.2.6 - Mon Jan 04 2016 13:32:25
+ * @version v0.3.0 - Sun Mar 27 2016 09:45:44
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -1175,20 +1175,20 @@
         .module('ngAA')
         .controller('ngAAAuthCtrl', ['$rootScope', '$scope', 'ngAAUser', 'ngAAConfig', '$state', function($rootScope, $scope, ngAAUser, ngAAConfig, $state) {
             //user model
-            $scope.user = {
-                email: '',
-                password: ''
-            };
+            $scope.user = {};
 
             //signin current
             //provided user credentials
             $scope.signin = function() {
+                //notify signin begin to allow third-party to add spinner or
+                //other custom logics
+                $rootScope.$broadcast('signinBegin');
+
                 ngAAUser
                     .signin($scope.user)
                     .then(function(response) {
-                        //clear email and password
-                        $scope.user.email = '';
-                        $scope.user.password = '';
+                        //clear user
+                        $scope.user = {};
 
                         //broadcast signin success
                         $rootScope.$broadcast('signinSuccess', response);
