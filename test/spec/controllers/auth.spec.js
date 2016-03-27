@@ -60,11 +60,6 @@ describe('ngAA:Controller:AuthCtrl', function() {
         });
     }));
 
-    it('should have user credentials on scope', function() {
-        expect(scope.user.email).to.exist;
-        expect(scope.user.password).to.exist;
-    });
-
     it('should be able to signin user', inject(function($rootScope, $state, ngAAUser) {
         authProvider.httpInterceptor = false;
         authProvider.signinUrl = '/signin';

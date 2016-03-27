@@ -90,6 +90,8 @@ $ npm install --save ng-aa
 </html>
 ```
 - Define your `signin` template to be used by `ngAA` at `views/signin.html`
+<br/>**Note!** `user` in signin is no longer restricted to `email` and `password` you can use any structure applicable to your `API` or backend. 
+
 ```html
 <form ng-submit="signin()" role="form" autocomplete="off">
     <legend>Login</legend>
@@ -166,6 +168,12 @@ $stateProvider
 {
     email:'user email',
     password:'password'
+}
+
+// or your custom structure
+{
+    username:'',
+    password:''
 }
 ```
 In return it expect the following response format
