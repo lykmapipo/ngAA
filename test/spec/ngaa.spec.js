@@ -1,50 +1,54 @@
 'use strict';
 
 describe('ngAA:Module', function() {
-    var authProvider;
-    var httpBackend;
-    var stateProvider;
+  var authProvider;
+  var httpBackend;
+  var stateProvider;
 
-    /// inject ngAA $authProvider
-    beforeEach(function() {
-        module('ngAA', function($authProvider, $stateProvider) {
-            authProvider = $authProvider;
-            stateProvider = $stateProvider;
-        });
+  /// inject ngAA $authProvider
+  beforeEach(function() {
+    module('ngAA', function($authProvider, $stateProvider) {
+      authProvider = $authProvider;
+      stateProvider = $stateProvider;
     });
 
-    // inject ngAA User
-    beforeEach(inject(function($httpBackend) {
-        httpBackend = $httpBackend;
-    }));
+    module(function($exceptionHandlerProvider) {
+      $exceptionHandlerProvider.mode('log');
+    });
+  });
 
-    it('should be able to handle authorization errors', inject(function($rootScope, $http, $state) {
-        authProvider.signinState = 'signin-t';
+  // inject ngAA User
+  beforeEach(inject(function($httpBackend) {
+    httpBackend = $httpBackend;
+  }));
 
-        stateProvider
-            .state('signin-t', {
-                template: '<h1>signin</h1>',
-            });
+  it('should be able to handle authorization errors', inject(function($rootScope, $http, $state) {
+    authProvider.signinState = 'signin-t';
 
-        //watch for signoutSuccess event
-        var authorizationErrorEmitted = false;
-        $rootScope.$on('authorizationError', function( /*event,response*/ ) {
-            authorizationErrorEmitted = true;
-        });
+    stateProvider
+      .state('signin-t', {
+        template: '<h1>signin</h1>',
+      });
 
-        httpBackend
-            .whenGET('/profile')
-            .respond(function( /*method, url, data, headers*/ ) {
-                return [401, {}, {}];
-            });
+    //watch for signoutSuccess event
+    var authorizationErrorEmitted = false;
+    $rootScope.$on('authorizationError', function( /*event,response*/ ) {
+      authorizationErrorEmitted = true;
+    });
 
-        $http
-            .get('/profile');
+    httpBackend
+      .whenGET('/profile')
+      .respond(function( /*method, url, data, headers*/ ) {
+        return [401, {}, {}];
+      });
 
-        httpBackend.flush();
+    $http
+      .get('/profile');
 
-        expect($state.current.name).to.equal('signin-t');
-        expect(authorizationErrorEmitted).to.be.true;
+    httpBackend.flush();
 
-    }));
+    expect($state.current.name).to.equal('signin-t');
+    expect(authorizationErrorEmitted).to.be.true;
+
+  }));
 });

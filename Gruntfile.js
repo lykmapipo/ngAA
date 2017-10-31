@@ -18,6 +18,9 @@ module.exports = function(grunt) {
     tmp: '.tmp'
   };
 
+  //server static
+  var serveStatic = require('serve-static');
+
   // Project propsuration.
   grunt
     .initConfig({
@@ -165,14 +168,14 @@ module.exports = function(grunt) {
             open: true,
             middleware: function(connect) {
               return [
-                connect.static('example'),
+                serveStatic('example'),
                 connect().use(
                   '/bower_components',
-                  connect.static('./bower_components')
+                  serveStatic('./bower_components')
                 ),
                 connect().use(
                   '/dist',
-                  connect.static('./dist')
+                  serveStatic('./dist')
                 )
               ];
             }
@@ -201,6 +204,17 @@ module.exports = function(grunt) {
             }
           }
         }
+      },
+
+      //uglify config
+      uglify: {
+        dist: {
+          files: {
+            '<%= props.dist%>/<%= pkg.name %>.min.js': [
+              '<%= props.dist%>/<%= pkg.name %>.js'
+            ]
+          }
+        }
       }
     });
 
@@ -217,10 +231,11 @@ module.exports = function(grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'jshint',
-    // 'karma',
+    'karma',
     'ngAnnotate',
     'concat',
-    'umd:dist'
+    'umd:dist',
+    'uglify:dist'
   ]);
 
   grunt.registerTask('test', [

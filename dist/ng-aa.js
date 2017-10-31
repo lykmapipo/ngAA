@@ -16,102 +16,106 @@
 
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.3.1 - Tue Oct 31 2017 16:21:54
+ * @version v0.3.2 - Tue Oct 31 2017 23:25:13
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 
 (function() {
-    'use strict';
+  'use strict';
 
-    var $stateProviderRef = null;
+  var $stateProviderRef = null;
 
-    /**
-     * @ngdoc module
-     * @name ngAA
-     * @description DRY authentication and authorization for angular and ui-router
-     */
-    angular
-        .module('ngAA', [
-            //depend on ngStorage for
-            //$sessionStorage and $localStorage
-            //see https://github.com/gsklee/ngStorage
-            'ngStorage',
-            //depend on angular-jwt
-            //for common jwt functionalities
-            //see https://github.com/auth0/angular-jwt
-            'angular-jwt',
-            //depend on ui-router
-            //see https://github.com/angular-ui/ui-router
-            'ui.router'
-        ])
-        .config(['$httpProvider', '$stateProvider', 'jwtInterceptorProvider', 'ngAAConfig', function($httpProvider, $stateProvider, jwtInterceptorProvider, ngAAConfig) {
-            $stateProviderRef = $stateProvider;
+  /**
+   * @ngdoc module
+   * @name ngAA
+   * @description DRY authentication and authorization for angular and ui-router
+   */
+  angular
+    .module('ngAA', [
+      //depend on ngStorage for
+      //$sessionStorage and $localStorage
+      //see https://github.com/gsklee/ngStorage
+      'ngStorage',
+      //depend on angular-jwt
+      //for common jwt functionalities
+      //see https://github.com/auth0/angular-jwt
+      'angular-jwt',
+      //depend on ui-router
+      //see https://github.com/angular-ui/ui-router
+      'ui.router'
+    ])
+    .config(['$httpProvider', '$stateProvider', 'jwtInterceptorProvider', 'ngAAConfig', function($httpProvider, $stateProvider, jwtInterceptorProvider, ngAAConfig) {
+      $stateProviderRef = $stateProvider;
 
-            //configure jwtInterceptorProvider
-            jwtInterceptorProvider.authHeader = ngAAConfig.authHeader;
+      //see https://github.com/angular-ui/ui-router/issues/2889
+      // $qProvider.errorOnUnhandledRejections(false);
 
-            // Please note we are annotating the function so that 
-            // the $injector works when the file is minified
-            jwtInterceptorProvider.tokenGetter = ['ngAAToken', function($token) {
-                //grab token from the TokenFactory
-                var token = $token.getToken();
+      //configure jwtInterceptorProvider
+      jwtInterceptorProvider.authHeader = ngAAConfig.authHeader;
 
-                //if http interception is allowed
-                //intercept the request
-                //with authorization header
-                if (token) {
-                    return token;
-                }
+      // Please note we are annotating the function so that 
+      // the $injector works when the file is minified
+      jwtInterceptorProvider.tokenGetter = ['ngAAToken', function($token) {
+        //grab token from the TokenFactory
+        var token = $token.getToken();
 
-                //if not intercept http
-                //return null 
-                else {
-                    return null;
-                }
-            }];
+        //if http interception is allowed
+        //intercept the request
+        //with authorization header
+        if (token) {
+          return token;
+        }
 
-            //adding jwtInterceptor
-            //to the list of interceptors
-            //see https://github.com/auth0/angular-jwt#jwtinterceptor
-            $httpProvider.interceptors.push('jwtInterceptor');
-        }])
-        .run(['$rootScope', '$state', 'ngAAConfig', '$auth', function($rootScope, $state, ngAAConfig, $auth) {
-            
-            //configure ngAA states
-            $stateProviderRef
-                .state(ngAAConfig.signinState, {
-                    url: ngAAConfig.signinRoute,
-                    templateUrl: ngAAConfig.signinTemplateUrl,
-                    controller: 'ngAAAuthCtrl'
-                });
-                
+        //if not intercept http
+        //return null 
+        else {
+          return null;
+        }
+      }];
 
-            //check for permits during state change
-            $rootScope
-                .$on('$stateChangeStart', $auth._onStateChange);
+      //adding jwtInterceptor
+      //to the list of interceptors
+      //see https://github.com/auth0/angular-jwt#jwtinterceptor
+      $httpProvider.interceptors.push('jwtInterceptor');
+    }])
+    .run(['$rootScope', '$state', 'ngAAConfig', '$auth', function($rootScope, $state, ngAAConfig, $auth) {
 
-            //handle backend 
-            //http authorization errors
-            $rootScope
-                .$on('unauthenticated', function(event, response) {
-                    //broadcast authorization error
-                    $rootScope
-                        .$broadcast('authorizationError', response);
+      //configure ngAA states
+      $stateProviderRef
+        .state(ngAAConfig.signinState, {
+          url: ngAAConfig.signinRoute,
+          templateUrl: ngAAConfig.signinTemplateUrl,
+          controller: 'ngAAAuthCtrl'
+        });
 
-                    //redirect user to signin
-                    //state
-                    $state.go(ngAAConfig.signinState);
-                });
 
-            //expose `isAuthenticated` in $rootScope
-            //so that it can be used in views
-            //and demanding controllers
-            $rootScope.isAuthenticated = $auth.isAuthenticatedSync();
-        }]);
+      //check for permits during state change
+      $rootScope
+        .$on('$stateChangeStart', $auth._onStateChange);
+
+      //handle backend 
+      //http authorization errors
+      $rootScope
+        .$on('unauthenticated', function(event, response) {
+          //broadcast authorization error
+          $rootScope
+            .$broadcast('authorizationError', response);
+
+          //redirect user to signin
+          //state
+          $state.go(ngAAConfig.signinState);
+        });
+
+      //expose `isAuthenticated` in $rootScope
+      //so that it can be used in views
+      //and demanding controllers
+      $rootScope.isAuthenticated = $auth.isAuthenticatedSync();
+    }]);
 
 }());
+
 
 (function() {
     'use strict';
@@ -182,248 +186,217 @@
 }());
 
 (function() {
-    'use strict';
+  'use strict';
 
-    /**
-     * @ngdoc function
-     * @name $auth
-     * @description ngAA authentication service provider
-     */
-    angular
-        .module('ngAA')
-        .provider('$auth', ['ngAAConfig', function(ngAAConfig) {
-            //reference to provider context
-            var self = this;
+  /**
+   * @ngdoc function
+   * @name $auth
+   * @description ngAA authentication service provider
+   */
+  angular
+    .module('ngAA')
+    .provider('$auth', ['ngAAConfig', function(ngAAConfig) {
+      //reference to provider context
+      var self = this;
 
-            //extend $authProvider with ability to set
-            //and get ngAA configurations
+      //extend $authProvider with ability to set
+      //and get ngAA configurations
 
-            //grab configurations keys
-            var configKeys = Object.keys(ngAAConfig);
+      //grab configurations keys
+      var configKeys = Object.keys(ngAAConfig);
 
-            //provide configuration 
-            //setter and getters
-            angular
-                .forEach(configKeys, function(configKey) {
-                    Object.defineProperty(self, configKey, {
-                        get: function() {
-                            return ngAAConfig[configKey];
-                        },
-                        set: function(value) {
-                            ngAAConfig[configKey] = value;
-                        }
+      //provide configuration 
+      //setter and getters
+      angular
+        .forEach(configKeys, function(configKey) {
+          Object.defineProperty(self, configKey, {
+            get: function() {
+              return ngAAConfig[configKey];
+            },
+            set: function(value) {
+              ngAAConfig[configKey] = value;
+            }
+          });
+        });
+
+      //$auth service factory fuction
+      self.$get = ['ngAAUtils', 'ngAAToken', 'ngAAUser', 'ngAAConfig', '$rootScope', '$state', function(ngAAUtils, ngAAToken, ngAAUser, ngAAConfig, $rootScope, $state) {
+        var $auth = {};
+
+        $auth.signin = function(user) {
+          return ngAAUser.signin(user);
+        };
+
+        $auth.signout = function() {
+          return ngAAUser.signout();
+        };
+
+        $auth.isAuthenticated = function() {
+          return ngAAUser.isAuthenticated();
+        };
+
+        $auth.isAuthenticatedSync = function() {
+          return ngAAUser.isAuthenticatedSync();
+        };
+
+        $auth.getClaim = function() {
+          return ngAAToken.getClaim();
+        };
+
+        $auth.getProfile = function() {
+          return ngAAUser.getProfile();
+        };
+
+
+        $auth.hasPermission = function(permission) {
+          return ngAAUser.hasPermission(permission);
+        };
+
+        $auth.hasPermissions = function(checkPermissions) {
+          return ngAAUser.hasPermissions(checkPermissions);
+        };
+
+        $auth.hasAnyPermission = function(checkPermissions) {
+          return ngAAUser.hasAnyPermission(checkPermissions);
+        };
+
+        //TODO refactor
+        $auth._onStateChange = function(event, toState, toParams, fromState, fromParams) {
+          // If there are permits defined in toState 
+          // then prevent default and attempt to authorize
+          var permits = ngAAUtils.getStatePermits(toState);
+
+          //grab authenticated data from state
+          var shouldCheckAuthenticity =
+            toState.data ? toState.data.authenticated : undefined;
+
+
+          //if there are permits
+          //defined and state is not signinState
+          //prevent default state change
+          //and chech permits
+          //before transition to state
+          var shouldCheckPermits =
+            (permits && toState.name !== ngAAConfig.signinState);
+
+          //check for authenticity only
+          if (shouldCheckAuthenticity && !shouldCheckPermits) {
+            //prevent default state transition
+            event.preventDefault();
+
+            //check if user is authenticated
+            //and has permission
+            ngAAUser.isAuthenticated().then(function(isAuthenticated) {
+              //if not authenticated
+              //throw exception
+              if (!isAuthenticated) {
+                //broadcast the error
+                $rootScope
+                  .$broadcast('authenticationDenied', 'Not authenticated');
+
+                //and redirect user to signin state
+                $state.go(ngAAConfig.signinState);
+              }
+              //user is authenticated
+              //continue to next state
+              else {
+                // If authenticated, use call state.go without triggering the event.
+                // Then trigger $stateChangeSuccess manually to resume the rest of the process
+                // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
+                $rootScope
+                  .$broadcast('authenticationAccepted', toState, toParams);
+
+                $state
+                  .go(toState.name, toParams, {
+                    notify: false
+                  })
+                  .then(function() {
+                    $rootScope
+                      .$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
+                  });
+              }
+
+            });
+          }
+
+          //check for authenticity and permits
+          else if (shouldCheckPermits) {
+            //prevent default state transition
+            event.preventDefault();
+
+            //check if user is authenticated
+            //and has permission
+            ngAAUser
+              .isAuthenticated()
+              .then(function(isAuthenticated) {
+                //if not authenticated
+                //throw exception
+                if (!isAuthenticated) {
+                  //broadcast the error
+                  $rootScope
+                    .$broadcast('permissionDenied', 'Not authenticated');
+
+                  //and redirect user to signin state
+                  $state.go(ngAAConfig.signinState);
+                }
+
+                //user is authenticated
+                //chech for profile permissions 
+                else {
+                  ngAAUser
+                    .checkPermits(permits)
+                    .then(function(hasPermit) {
+                      //if has no permit
+                      //broadcast execptions and
+                      //redirect to signin
+                      if (!hasPermit) {
+                        //broadcast the error
+                        $rootScope
+                          .$broadcast('permissionDenied', 'Not permitted');
+
+                        //and redirect user to signin state
+                        $state.go(ngAAConfig.signinState);
+                      }
+
+                      //user is authenticated
+                      //and permitted
+                      //continue to next state
+                      else {
+                        // If authorized, use call state.go without triggering the event.
+                        // Then trigger $stateChangeSuccess manually to resume the rest of the process
+                        // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
+                        $rootScope
+                          .$broadcast('permissionAccepted', toState, toParams);
+
+                        $state
+                          .go(
+                            toState.name,
+                            toParams, {
+                              notify: false
+                            })
+                          .then(function() {
+                            $rootScope
+                              .$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
+                          });
+                      }
                     });
-                });
+                }
+              });
+          }
+          //no permits defined
+          //and do not check authenticity
+          //continue with normal state change
+          else {
+            return;
+          }
+        };
 
-            //$auth service factory fuction
-            self.$get = ['ngAAUtils', 'ngAAToken', 'ngAAUser', 'ngAAConfig', '$rootScope', '$state', function(ngAAUtils, ngAAToken, ngAAUser, ngAAConfig, $rootScope, $state) {
-                var $auth = {};
-
-                $auth.signin = function(user) {
-                    return ngAAUser.signin(user);
-                };
-
-                $auth.signout = function() {
-                    return ngAAUser.signout();
-                };
-
-                $auth.isAuthenticated = function() {
-                    return ngAAUser.isAuthenticated();
-                };
-
-                $auth.isAuthenticatedSync = function() {
-                    return ngAAUser.isAuthenticatedSync();
-                };
-
-                $auth.getClaim = function() {
-                    return ngAAToken.getClaim();
-                };
-
-                $auth.getProfile = function() {
-                    return ngAAUser.getProfile();
-                };
-
-
-                $auth.hasPermission = function(permission) {
-                    return ngAAUser.hasPermission(permission);
-                };
-
-                $auth.hasPermissions = function(checkPermissions) {
-                    return ngAAUser.hasPermissions(checkPermissions);
-                };
-
-                $auth.hasAnyPermission = function(checkPermissions) {
-                    return ngAAUser.hasAnyPermission(checkPermissions);
-                };
-
-                //TODO refactor
-                $auth._onStateChange = function(event, toState, toParams, fromState, fromParams) {
-                    // If there are permits defined in toState 
-                    // then prevent default and attempt to authorize
-                    var permits = ngAAUtils.getStatePermits(toState);
-
-                    //grab authenticated data from state
-                    var shouldCheckAuthenticity =
-                        toState.data ? toState.data.authenticated : undefined;
-
-
-                    //if there are permits
-                    //defined and state is not signinState
-                    //prevent default state change
-                    //and chech permits
-                    //before transition to state
-                    var shouldCheckPermits =
-                        permits &&
-                        toState.name !== ngAAConfig.signinState;
-
-                    //check for authenticity only
-                    if (shouldCheckAuthenticity && !shouldCheckPermits) {
-                        //prevent default state transition
-                        event.preventDefault();
-
-                        //check if user is authenticated
-                        //and has permission
-                        ngAAUser.isAuthenticated().then(function(isAuthenticated) {
-                            //if not authenticated
-                            //throw exception
-                            if (!isAuthenticated) {
-                                //broadcast the error
-                                $rootScope
-                                    .$broadcast(
-                                        'authenticationDenied',
-                                        'Not authenticated'
-                                    );
-
-                                //and redirect user to signin state
-                                $state.go(ngAAConfig.signinState);
-                            }
-                            //user is authenticated
-                            //continue to next state
-                            else {
-                                // If authenticated, use call state.go without triggering the event.
-                                // Then trigger $stateChangeSuccess manually to resume the rest of the process
-                                // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
-                                $rootScope
-                                    .$broadcast(
-                                        'authenticationAccepted',
-                                        toState,
-                                        toParams
-                                    );
-
-                                $state
-                                    .go(
-                                        toState.name,
-                                        toParams, {
-                                            notify: false
-                                        })
-                                    .then(function() {
-                                        $rootScope
-                                            .$broadcast(
-                                                '$stateChangeSuccess',
-                                                toState,
-                                                toParams,
-                                                fromState,
-                                                fromParams
-                                            );
-                                    });
-                            }
-
-                        });
-                    }
-
-                    //check for authenticity and permits
-                    else if (shouldCheckPermits) {
-                        //prevent default state transition
-                        event.preventDefault();
-
-                        //check if user is authenticated
-                        //and has permission
-                        ngAAUser
-                            .isAuthenticated()
-                            .then(function(isAuthenticated) {
-                                //if not authenticated
-                                //throw exception
-                                if (!isAuthenticated) {
-                                    //broadcast the error
-                                    $rootScope
-                                        .$broadcast(
-                                            'permissionDenied',
-                                            'Not authenticated'
-                                        );
-
-                                    //and redirect user to signin state
-                                    $state.go(ngAAConfig.signinState);
-                                }
-
-                                //user is authenticated
-                                //chech for profile permissions 
-                                else {
-                                    ngAAUser
-                                        .checkPermits(permits)
-                                        .then(function(hasPermit) {
-                                            //if has no permit
-                                            //broadcast execptions and
-                                            //redirect to signin
-                                            if (!hasPermit) {
-                                                //broadcast the error
-                                                $rootScope
-                                                    .$broadcast(
-                                                        'permissionDenied',
-                                                        'Not permitted'
-                                                    );
-
-                                                //and redirect user to signin state
-                                                $state.go(ngAAConfig.signinState);
-                                            }
-
-                                            //user is authenticated
-                                            //and permitted
-                                            //continue to next state
-                                            else {
-                                                // If authorized, use call state.go without triggering the event.
-                                                // Then trigger $stateChangeSuccess manually to resume the rest of the process
-                                                // Note: This is a pseudo-hacky fix which should be fixed in future ui-router versions
-                                                $rootScope
-                                                    .$broadcast(
-                                                        'permissionAccepted',
-                                                        toState,
-                                                        toParams
-                                                    );
-
-                                                $state
-                                                    .go(
-                                                        toState.name,
-                                                        toParams, {
-                                                            notify: false
-                                                        })
-                                                    .then(function() {
-                                                        $rootScope
-                                                            .$broadcast(
-                                                                '$stateChangeSuccess',
-                                                                toState,
-                                                                toParams,
-                                                                fromState,
-                                                                fromParams
-                                                            );
-                                                    });
-                                            }
-                                        });
-                                }
-                            });
-                    }
-                    //no permits defined
-                    //and do not check authenticity
-                    //continue with normal state change
-                    else {
-                        return;
-                    }
-                };
-
-                return $auth;
-            }];
-        }]);
+        return $auth;
+      }];
+    }]);
 
 }());
+
 
 (function() {
     'use strict';
