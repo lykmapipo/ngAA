@@ -440,7 +440,7 @@ $auth
 ### show-if-has-any-permit
 `ngAA` provide a `show-if-has-any-permit` directive which can be used in templates to show or hide HTML elements when current signed in user has any of the provided permissions.
 ```html
-<li show-if-has-any-permits="Post:view, Comment:create">
+<li show-if-has-any-permit="Post:view, Comment:create">
     ...
 </li>
 ```

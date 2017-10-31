@@ -4,19 +4,19 @@
     define(["angular"], function (a0) {
       return (factory(a0));
     });
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
     module.exports = factory(require("angular"),require("angular-jwt"),require("angular-ui-router"),require("ngstorage"));
   } else {
-    factory(angular);
+    factory(root["angular"]);
   }
 }(this, function (angular) {
 
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.3.0 - Sun Mar 27 2016 09:45:44
+ * @version v0.3.1 - Tue Oct 31 2017 16:21:54
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
