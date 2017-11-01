@@ -16,7 +16,7 @@
 
 /**
  * DRY authentication and authorization for angular and ui-router
- * @version v0.3.2 - Tue Oct 31 2017 23:25:13
+ * @version v0.3.3 - Wed Nov 01 2017 08:18:17
  * @link https://github.com/lykmapipo/ngAA
  * @authors lykmapipo <lallyelias87@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
